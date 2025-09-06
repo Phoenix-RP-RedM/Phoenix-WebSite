@@ -61,33 +61,23 @@
             position: relative;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            cursor: zoom-in;
+            cursor: pointer;
             max-width: 300px;
             margin-left: auto;
             margin-right: auto;
-            transition: all 0.5s ease;
+            transition: all 0.3s ease;
             overflow: hidden;
         }
 
-        .logo-container.zoomed {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            max-width: none;
-            margin: 0;
-            border-radius: 0;
-            cursor: zoom-out;
-            z-index: 1000;
-            background: rgba(0, 0, 0, 0.9);
-            box-shadow: none;
+        .logo-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
         }
 
         .logo {
             width: 100%;
             height: auto;
-            transition: all 0.5s ease;
+            transition: all 0.3s ease;
             image-rendering: pixelated;
             image-rendering: -moz-crisp-edges;
             image-rendering: crisp-edges;
@@ -95,16 +85,8 @@
         }
 
         .logo-container:hover .logo {
+            transform: scale(1.05);
             filter: brightness(1.1) contrast(1.05) saturate(1.1);
-        }
-
-        .logo-container.zoomed .logo {
-            width: auto;
-            height: auto;
-            max-width: 90vw;
-            max-height: 90vh;
-            object-fit: contain;
-            filter: brightness(1.1) contrast(1.05);
         }
 
         .zoom-instructions {
@@ -122,19 +104,6 @@
 
         .logo-container:hover .zoom-instructions {
             opacity: 1;
-        }
-
-        .logo-container.zoomed .zoom-instructions {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.8);
-            background: rgba(0, 0, 0, 0.5);
-            padding: 8px 16px;
-            border-radius: 20px;
-            opacity: 1;
-            z-index: 1001;
         }
 
         .description {
@@ -210,10 +179,13 @@
                 margin: 10px;
             }
             
-            .logo-container.zoomed .zoom-instructions {
-                bottom: 15px;
+            .logo {
+                max-width: 250px;
+            }
+            
+            .zoom-instructions {
+                bottom: -25px;
                 font-size: 0.7rem;
-                padding: 6px 12px;
             }
             
             .links a {
@@ -243,7 +215,7 @@
 
         <div class="logo-container" id="logoContainer">
             <img src="/zplace/ZPlace_Logo_C.I.png" alt="Phoenix Logo en Pixel Art pour ZPlace" class="logo" id="logoImage">
-            <div class="zoom-instructions">🔍 Cliquez pour zoomer</div>
+            <div class="zoom-instructions">🔍 Cliquez pour ouvrir en grand</div>
         </div>
 
         <div class="pixel-art-note">
@@ -287,87 +259,17 @@
         document.getElementById('timestamp').textContent = 
             'Dernière mise à jour : ' + new Date().toLocaleString('fr-FR');
         
-        // Gestion du zoom de l'image
+        // Gestion du clic sur l'image pour ouvrir dans un nouvel onglet
         const logoContainer = document.getElementById('logoContainer');
-        const logoImage = document.getElementById('logoImage');
-        let isZoomed = false;
         
-        // Fonction pour basculer le zoom
-        function toggleZoom() {
-            isZoomed = !isZoomed;
-            
-            if (isZoomed) {
-                logoContainer.classList.add('zoomed');
-                logoContainer.style.cursor = 'zoom-out';
-                // Bloquer le scroll du body
-                document.body.style.overflow = 'hidden';
-            } else {
-                logoContainer.classList.remove('zoomed');
-                logoContainer.style.cursor = 'zoom-in';
-                // Restaurer le scroll du body
-                document.body.style.overflow = 'auto';
-            }
-        }
-        
-        // Clic sur l'image pour basculer le zoom
         logoContainer.addEventListener('click', (e) => {
             e.preventDefault();
-            e.stopPropagation();
-            toggleZoom();
-        });
-        
-        // Fermeture avec la touche Échap
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && isZoomed) {
-                toggleZoom();
-            }
-        });
-        
-        // Clic en dehors de l'image pour dézoomer (seulement sur le fond noir)
-        document.addEventListener('click', (e) => {
-            if (isZoomed && e.target === logoContainer && !logoImage.contains(e.target)) {
-                toggleZoom();
-            }
-        });
-        
-        // Animation améliorée au survol (uniquement si pas zoomé)
-        logoContainer.addEventListener('mouseenter', () => {
-            if (!isZoomed) {
-                logoImage.style.filter = 'brightness(1.1) contrast(1.05) saturate(1.1)';
-            }
-        });
-        
-        logoContainer.addEventListener('mouseleave', () => {
-            if (!isZoomed) {
-                logoImage.style.filter = 'brightness(1) contrast(1) saturate(1)';
-            }
+            window.open('/zplace/ZPlace_Logo_C.I.png', '_blank');
         });
         
         // Préchargement de l'image pour un affichage plus fluide
         const preloadImage = new Image();
         preloadImage.src = '/zplace/ZPlace_Logo_C.I.png';
-        
-        // Mise à jour du texte d'instruction selon l'état
-        function updateInstructions() {
-            const instructions = document.querySelector('.zoom-instructions');
-            if (isZoomed) {
-                instructions.textContent = '🔍 Cliquez ou appuyez sur Échap pour fermer';
-            } else {
-                instructions.textContent = '🔍 Cliquez pour zoomer';
-            }
-        }
-        
-        // Observer les changements de classe pour mettre à jour les instructions
-        const observer = new MutationObserver(updateInstructions);
-        observer.observe(logoContainer, { 
-            attributes: true, 
-            attributeFilter: ['class'] 
-        });
-        
-        // Empêcher le zoom navigateur sur double-clic
-        logoContainer.addEventListener('dblclick', (e) => {
-            e.preventDefault();
-        });
     </script>
 </body>
 </html>

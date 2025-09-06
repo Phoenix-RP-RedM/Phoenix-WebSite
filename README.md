@@ -1,34 +1,137 @@
-# Phoenix--[NAME_MODULE_HERE]
-Short description of Phoenix--[NAME_MODULE_HERE]
+# Phoenix ZPlace Website
+Site web pour présenter le logo Phoenix en pixel art dans le cadre du ZEvent - événement caritatif
 
-# Introduction
-Detailed description of Phoenix--[NAME_MODULE_HERE]
-- With this feature
-- And that feature
+## 🎯 Introduction
+Ce projet est un serveur web Node.js simple et sécurisé conçu pour présenter le logo Phoenix en pixel art dans le cadre de notre participation au **ZPlace** du **ZEvent**. 
 
-# Examples
-![Image description](image.png)
+Le ZEvent est l'un des plus grands événements caritatifs de la communauté gaming francophone, où des streamers et créateurs de contenu se rassemblent pour lever des fonds pour des associations caritatives.
 
-# Dependencies
-Almost all Phoenix plugins are dependants on [Phoenix-Core](https://github.com/Phoenix-RP-RedM/phoenix-core) and [Phoenix-Sync](https://github.com/Phoenix-RP-RedM/phoenix-sync) !
-Make sure these are started before all others plugins !
+### Fonctionnalités
+- 🎨 Affichage du logo Phoenix en pixel art optimisé
+- 🔒 Serveur sécurisé avec Helmet.js
+- 🚀 Dockerisé pour un déploiement facile
+- 📱 Interface responsive et moderne
+- 🏥 Endpoint de santé pour le monitoring
+- ⚡ Compression et optimisation des performances
 
-# Installation
-Simply clone the `Phoenix--[NAME_MODULE_HERE]` into your `resources/[ Phoenix ]` folder, and start it via `ensure Phoenix--[NAME_MODULE_HERE]` in your `resources.cfg` config file.
+## 🖼️ Aperçu
+![Logo Phoenix ZPlace](ZPlace/ZPlace_Logo_C.I.png)
 
-If you use our database you can activate it in list of activatedModules on the collection `params` _if its missing, add it in the list_.
-If you do not use our database go to the `[ Configs ]/[ Core ]/Modules.lua` file in `Phoenix-Core` set it to `true` in the list `PhoenixSettings.activatedModules` _if its missing, add it in the list_.
+*Notre logo en pixel art pour le ZPlace du ZEvent*
 
-If left to `false` the core will not activate this module.
+## 🛠️ Technologies utilisées
+- **Node.js** (v18+) - Runtime JavaScript
+- **Express.js** - Framework web
+- **Helmet.js** - Sécurité HTTP
+- **Docker** - Containerisation
+- **HTML5/CSS3** - Interface utilisateur
 
-# Credits
-Credit : 
+## 📦 Installation
+
+### Prérequis
+- Node.js 18+ 
+- Docker (optionnel)
+- npm ou yarn
+
+### Installation locale
+```bash
+# Cloner le repository
+git clone <repository-url>
+cd Phoenix-WebSite
+
+# Installer les dépendances
+npm install
+
+# Lancer en mode développement
+npm run dev
+
+# Lancer en mode production
+npm start
+```
+
+### Installation avec Docker
+```bash
+# Construire l'image
+docker build -t phoenix-zplace-web .
+
+# Lancer le conteneur
+docker run -d -p 3000:3000 --name phoenix-zplace-web phoenix-zplace-web
+```
+
+## 🚀 Déploiement
+
+Le serveur expose le port 3000 par défaut. L'application inclut :
+- Route principale `/` - Page de présentation
+- Route de santé `/health` - Pour le monitoring
+- Fichiers statiques servis depuis `/static` et `/zplace`
+
+### Variables d'environnement
+- `PORT` - Port d'écoute (défaut: 3000)
+- `NODE_ENV` - Environnement (development/production)
+
+## 🔧 Configuration Docker
+
+Le projet inclut une configuration Docker avec :
+- Image Alpine légère pour la sécurité
+- Utilisateur non-root
+- Health checks intégrés
+- Optimisation des performances
+
+## 🎮 À propos du ZEvent
+
+Le ZEvent est un événement caritatif majeur de la communauté gaming francophone. Le ZPlace est un canvas collaboratif en pixel art où chaque communauté peut contribuer à une œuvre d'art collective tout en soutenant des causes caritatives.
+
+## 🏗️ Structure du projet
+```
+Phoenix-WebSite/
+├── server.js              # Serveur Express principal
+├── package.json           # Dépendances et scripts
+├── Dockerfile             # Configuration Docker
+├── public/                # Fichiers statiques
+│   └── index.html         # Page principale
+├── ZPlace/                # Assets ZPlace
+│   └── ZPlace_Logo_C.I.png # Logo en pixel art
+└── README.md              # Documentation
+```
+
+## 🔒 Sécurité
+
+Le serveur implémente plusieurs mesures de sécurité :
+- Headers de sécurité avec Helmet.js
+- Content Security Policy (CSP)
+- Utilisateur non-root dans Docker
+- Gestion d'erreurs centralisée
+- Validation des entrées
+
+## 🎯 Roadmap
+
+- [x] Serveur web basique
+- [x] Interface de présentation du logo
+- [x] Dockerisation complète
+- [ ] Ajout de l'image complète du ZPlace final
+- [ ] Intégration de métriques de monitoring
+- [ ] Support multi-langues
+
+## 🤝 Contribution
+
+Les contributions sont les bienvenues ! N'hésitez pas à :
+1. Fork le projet
+2. Créer une branche (`git checkout -b feature/amelioration`)
+3. Commit vos changements (`git commit -am 'Ajout d'une fonctionnalité'`)
+4. Push la branche (`git push origin feature/amelioration`)
+5. Ouvrir une Pull Request
+
+## 📄 Licence
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+
+## 👥 Crédits
+**Équipe Phoenix RP** - Développement et design
+**Communauté ZEvent** - Inspiration et support de l'événement caritatif
 
 ---
 
-# Phoenix Project
+## 🎮 Phoenix Project
 Phoenix is a _(Red Dead Redemption 2)_ RedM roleplay framework that is designed to bring your roleplay to a new level of immersion.
 
-Github : https://github.com/Phoenix-RP-RedM
-
-Discord : https://discord.gg/pdFdGK8Pv2
+**GitHub** : https://github.com/Phoenix-RP-RedM
+**Discord** : https://discord.gg/pdFdGK8Pv2

@@ -39,3 +39,6 @@ luac.out
 *.x86_64
 *.hex
 
+# Node.js
+node_modules/
+npm-debug.log

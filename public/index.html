@@ -3,11 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phoenix ZPlace - ZEvent 2025</title>
-    <meta name="description" content="Logo Phoenix en pixel art pour l'événement caritatif ZEvent - ZPlace">
-    <meta name="keywords" content="ZEvent, ZPlace, Phoenix, pixel art, caritatif, charity">
+    <title>Cendres Incandescentes ZPlace - ZEvent 2025</title>
+    <meta name="description" content="Logo Cendres Incandescentes en pixel art pour l'événement caritatif ZEvent - ZPlace">
+    <meta name="keywords" content="ZEvent, ZPlace, Cendres Incandescentes, pixel art, caritatif, charity">
     <link rel="icon" type="image/png" href="/zplace/ZPlace_Logo_C.I.png">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Cendres Incandescentes">
+    <link rel="apple-touch-icon" href="/zplace/ZPlace_Logo_C.I.png">
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Preload critiques -->
+    <link rel="preload" href="/zplace/ZPlace_Logo_C.I.png" as="image">
+    
     <style>
+        :root {
+            --primary-color: #ff6b6b;
+            --secondary-color: #4ecdc4;
+            --accent-color: #feca57;
+            --dark-bg: #2c3e50;
+            --light-bg: #ecf0f1;
+            --text-primary: #2c3e50;
+            --text-light: #ffffff;
+            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 15px 40px rgba(0, 0, 0, 0.15);
+            --shadow-strong: 0 20px 50px rgba(0, 0, 0, 0.25);
+            --border-radius: 20px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -15,37 +42,60 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 50%, var(--accent-color) 100%);
+            background-attachment: fixed;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            text-align: center;
-            padding: 20px;
+            color: var(--text-light);
+            overflow-x: hidden;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 800px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .main-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-strong);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-primary);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.8s ease forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: gradientShift 3s ease infinite;
+            animation: gradientShift 4s ease infinite;
+            font-weight: 800;
+            letter-spacing: -0.02em;
         }
 
         @keyframes gradientShift {
@@ -53,31 +103,41 @@
             50% { background-position: 100% 50%; }
         }
 
+        .subtitle {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
         .logo-container {
-            margin: 30px 0;
+            margin: 2rem 0;
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
             cursor: pointer;
+            width: 100%;
             max-width: 300px;
             margin-left: auto;
             margin-right: auto;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             overflow: hidden;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
         }
 
         .logo-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-strong);
         }
 
         .logo {
             width: 100%;
             height: auto;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             image-rendering: pixelated;
             image-rendering: -moz-crisp-edges;
             image-rendering: crisp-edges;
@@ -85,191 +145,387 @@
         }
 
         .logo-container:hover .logo {
-            transform: scale(1.05);
-            filter: brightness(1.1) contrast(1.05) saturate(1.1);
+            filter: brightness(1.1) contrast(1.05) saturate(1.2);
         }
 
         .zoom-instructions {
             position: absolute;
-            bottom: -30px;
+            bottom: -2.5rem;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             opacity: 0;
-            transition: opacity 0.3s ease;
-            color: rgba(255, 255, 255, 0.7);
+            transition: var(--transition);
+            color: var(--text-primary);
             text-align: center;
             white-space: nowrap;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            box-shadow: var(--shadow-soft);
         }
 
         .logo-container:hover .zoom-instructions {
             opacity: 1;
+            transform: translateX(-50%) translateY(-5px);
         }
 
-        .description {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            margin: 20px 0;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        .info-section {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(78, 205, 196, 0.1));
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--primary-color);
+            text-align: left;
         }
 
-        .zevent-info {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 25px;
-            margin: 30px 0;
-            border-left: 4px solid #ff6b6b;
+        .info-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: clamp(1.2rem, 4vw, 1.4rem);
+            font-weight: 700;
         }
 
-        .zevent-info h2 {
-            color: #ff6b6b;
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-        }
-
-        .zevent-info p {
-            margin-bottom: 10px;
-        }
-
-        .pixel-art-note {
-            background: rgba(76, 175, 80, 0.2);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            border: 2px solid rgba(76, 175, 80, 0.5);
-        }
-
-        .pixel-art-note strong {
-            color: #4caf50;
-        }
-
-        .footer {
-            margin-top: 30px;
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .links {
-            margin: 20px 0;
-        }
-
-        .links a {
-            color: #4ecdc4;
-            text-decoration: none;
-            margin: 0 15px;
-            padding: 10px 20px;
-            border-radius: 25px;
-            background: rgba(78, 205, 196, 0.2);
-            transition: all 0.3s ease;
-            display: inline-block;
-        }
-
-        .links a:hover {
-            background: rgba(78, 205, 196, 0.4);
-            transform: translateY(-2px);
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .container {
-                padding: 20px;
-                margin: 10px;
-            }
-            
-            .logo {
-                max-width: 250px;
-            }
-            
-            .zoom-instructions {
-                bottom: -25px;
-                font-size: 0.7rem;
-            }
-            
-            .links a {
-                display: block;
-                margin: 10px 0;
-            }
+        .info-section p {
+            margin-bottom: 0.8rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            line-height: 1.7;
         }
 
         .coming-soon {
-            background: rgba(255, 193, 7, 0.2);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 20px 0;
-            border: 2px solid rgba(255, 193, 7, 0.5);
-            color: #ffc107;
+            background: linear-gradient(135deg, rgba(254, 202, 87, 0.2), rgba(255, 193, 7, 0.1));
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 2px solid var(--accent-color);
+            color: #e67e22;
+            font-weight: 600;
+        }
+
+        .links {
+            margin: 2rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .links a {
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .links a:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+            filter: brightness(1.1);
+        }
+
+        .footer {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            opacity: 0.7;
+            text-align: center;
+        }
+
+        .offline-indicator {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: #e74c3c;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-100px);
+            transition: var(--transition);
+            z-index: 1000;
+            display: none;
+        }
+
+        .offline-indicator.show {
+            transform: translateY(0);
+            display: block;
+        }
+
+        .online-indicator {
+            background: #27ae60;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            .container {
+                padding: 2rem;
+            }
+            
+            .main-card {
+                padding: 3rem;
+                max-width: 600px;
+            }
+            
+            .logo-container {
+                max-width: 350px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .main-card {
+                max-width: 700px;
+                padding: 4rem;
+            }
+        }
+
+        /* Animation pour les éléments */
+        .info-section, .coming-soon, .links {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .info-section:nth-of-type(2) { animation-delay: 0.2s; }
+        .info-section:nth-of-type(3) { animation-delay: 0.4s; }
+        .info-section:nth-of-type(4) { animation-delay: 0.6s; }
+        .coming-soon { animation-delay: 0.8s; }
+        .links { animation-delay: 1.0s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎮 Phoenix ZPlace</h1>
-        
-        <div class="description">
-            Bienvenue sur la page de présentation du logo <strong>Phoenix</strong> en pixel art !<br>
-            Nous participons fièrement au <strong>ZPlace</strong> de l'événement caritatif <strong>ZEvent</strong>.
-        </div>
+        <div class="main-card">
+            <h1>🔥 Cendres Incandescentes ZPlace</h1>
+            <p class="subtitle">Participation à l'événement caritatif ZEvent 2025</p>
+            
+            <div class="logo-container" id="logoContainer">
+                <img src="/zplace/ZPlace_Logo_C.I.png" alt="Cendres Incandescentes Logo en Pixel Art pour ZPlace" class="logo" id="logoImage">
+                <div class="zoom-instructions">🔍 Cliquez pour ouvrir en grand</div>
+            </div>
 
-        <div class="logo-container" id="logoContainer">
-            <img src="/zplace/ZPlace_Logo_C.I.png" alt="Phoenix Logo en Pixel Art pour ZPlace" class="logo" id="logoImage">
-            <div class="zoom-instructions">🔍 Cliquez pour ouvrir en grand</div>
-        </div>
+            <div class="info-section">
+                <h2>🎨 Notre Logo en Pixel Art</h2>
+                <p>Ce logo représente l'identité visuelle de <strong>Cendres Incandescentes</strong>, notre framework de roleplay pour Red Dead Redemption 2 (RedM).</p>
+                <p>Chaque pixel a été soigneusement placé pour créer une représentation fidèle de notre communauté dans l'univers du ZPlace.</p>
+            </div>
 
-        <div class="pixel-art-note">
-            <strong>🎨 Notre Logo en Pixel Art</strong><br>
-            Ce logo représente l'identité visuelle de Phoenix RP, notre framework de roleplay pour Red Dead Redemption 2 (RedM). 
-            Chaque pixel a été soigneusement placé pour créer une représentation fidèle de notre communauté dans l'univers du ZPlace.
-        </div>
+            <div class="info-section">
+                <h2>🎯 À propos du ZEvent</h2>
+                <p>Le <strong>ZEvent</strong> est l'un des plus grands événements caritatifs de la communauté gaming francophone.</p>
+                <p>Chaque année, des streamers, créateurs de contenu et communautés se rassemblent pour lever des fonds pour des associations caritatives.</p>
+                <p>Le <strong>ZPlace</strong> est un canvas collaboratif en pixel art où chaque communauté peut laisser sa marque et contribuer à une œuvre d'art collective.</p>
+            </div>
 
-        <div class="zevent-info">
-            <h2>🎯 À propos du ZEvent</h2>
-            <p>Le <strong>ZEvent</strong> est l'un des plus grands événements caritatifs de la communauté gaming francophone.</p>
-            <p>Chaque année, des streamers, créateurs de contenu et communautés se rassemblent pour lever des fonds pour des associations caritatives.</p>
-            <p>Le <strong>ZPlace</strong> est un canvas collaboratif en pixel art où chaque communauté peut laisser sa marque et contribuer à une œuvre d'art collective.</p>
-        </div>
+            <div class="coming-soon">
+                <strong>🚧 Prochainement</strong><br>
+                L'image complète du ZPlace sera ajoutée ici une fois l'événement terminé pour immortaliser notre participation !
+            </div>
 
-        <div class="coming-soon">
-            <strong>🚧 Prochainement</strong><br>
-            L'image complète du ZPlace sera ajoutée ici une fois l'événement terminé pour immortaliser notre participation !
-        </div>
+            <div class="info-section">
+                <h2>🎮 Cendres Incandescentes</h2>
+                <p><strong>Cendres Incandescentes</strong> est un framework de roleplay pour Red Dead Redemption 2 (RedM) conçu pour offrir une expérience d'immersion inégalée.</p>
+                <p>Notre communauté est fière de participer à cet événement caritatif et de représenter l'univers du roleplay western dans le ZPlace.</p>
+            </div>
 
-        <div class="zevent-info">
-            <h2>🎮 Phoenix RP</h2>
-            <p><strong>Phoenix</strong> est un framework de roleplay pour Red Dead Redemption 2 (RedM) conçu pour offrir une expérience d'immersion inégalée.</p>
-            <p>Notre communauté est fière de participer à cet événement caritatif et de représenter l'univers du roleplay western dans le ZPlace.</p>
-        </div>
+            <div class="links">
+                <a href="https://github.com/Phoenix-RP-RedM" target="_blank" rel="noopener">
+                    🔗 GitHub Cendres Incandescentes
+                </a>
+                <a href="https://discord.gg/pdFdGK8Pv2" target="_blank" rel="noopener">
+                    💬 Discord Cendres Incandescentes
+                </a>
+            </div>
 
-        <div class="links">
-            <a href="https://github.com/Phoenix-RP-RedM" target="_blank" rel="noopener">🔗 GitHub Phoenix</a>
-            <a href="https://discord.gg/pdFdGK8Pv2" target="_blank" rel="noopener">💬 Discord Phoenix</a>
-        </div>
-
-        <div class="footer">
-            <p>Fait avec ❤️ par la communauté Phoenix RP</p>
-            <p>Pour le ZEvent 2025 - Ensemble pour la charité 🎯</p>
-            <p id="timestamp"></p>
+            <div class="footer">
+                <p>Fait avec ❤️ par la communauté Cendres Incandescentes</p>
+                <p>Pour le ZEvent 2025 - Ensemble pour la charité 🎯</p>
+                <p id="timestamp"></p>
+            </div>
         </div>
     </div>
 
+    <!-- Indicateur de connexion -->
+    <div class="offline-indicator" id="connectionStatus">
+        📡 Mode hors ligne
+    </div>
+
     <script>
-        // Affichage du timestamp de dernière mise à jour
-        document.getElementById('timestamp').textContent = 
-            'Dernière mise à jour : ' + new Date().toLocaleString('fr-FR');
+        // ========================================
+        // GESTION PWA ET SERVICE WORKER
+        // ========================================
         
-        // Gestion du clic sur l'image pour ouvrir dans un nouvel onglet
-        const logoContainer = document.getElementById('logoContainer');
+        class PWAManager {
+            constructor() {
+                this.connectionStatus = document.getElementById('connectionStatus');
+                this.isOnline = navigator.onLine;
+                this.init();
+            }
+            
+            async init() {
+                await this.registerServiceWorker();
+                this.setupConnectionMonitoring();
+                this.setupPWAInstall();
+            }
+            
+            async registerServiceWorker() {
+                if ('serviceWorker' in navigator) {
+                    try {
+                        const registration = await navigator.serviceWorker.register('/sw.js');
+                        console.log('✅ Service Worker enregistré');
+                        
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    this.showUpdateBanner();
+                                }
+                            });
+                        });
+                    } catch (error) {
+                        console.error('❌ Échec Service Worker:', error);
+                    }
+                }
+            }
+            
+            setupConnectionMonitoring() {
+                const updateStatus = () => {
+                    this.isOnline = navigator.onLine;
+                    
+                    if (this.isOnline) {
+                        this.connectionStatus.textContent = '📡 En ligne';
+                        this.connectionStatus.className = 'offline-indicator online-indicator show';
+                        setTimeout(() => this.connectionStatus.classList.remove('show'), 3000);
+                    } else {
+                        this.connectionStatus.textContent = '📴 Mode hors ligne';
+                        this.connectionStatus.className = 'offline-indicator show';
+                    }
+                };
+                
+                window.addEventListener('online', updateStatus);
+                window.addEventListener('offline', updateStatus);
+                
+                if (!this.isOnline) updateStatus();
+            }
+            
+            setupPWAInstall() {
+                let deferredPrompt;
+                
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    this.showInstallButton(deferredPrompt);
+                });
+            }
+            
+            showInstallButton(prompt) {
+                const button = document.createElement('button');
+                button.textContent = '📱 Installer l\'app';
+                button.style.cssText = `
+                    position: fixed; bottom: 20px; left: 20px;
+                    background: var(--primary-color); color: white;
+                    border: none; padding: 12px 20px; border-radius: 25px;
+                    font-weight: 600; cursor: pointer; z-index: 1000;
+                    box-shadow: var(--shadow-medium); transition: var(--transition);
+                `;
+                
+                button.onclick = async () => {
+                    prompt.prompt();
+                    await prompt.userChoice;
+                    button.remove();
+                };
+                
+                document.body.appendChild(button);
+            }
+            
+            showUpdateBanner() {
+                const banner = document.createElement('div');
+                banner.innerHTML = `
+                    <div style="position: fixed; top: 0; left: 0; right: 0; background: var(--accent-color);
+                                color: var(--text-primary); padding: 1rem; text-align: center;
+                                font-weight: 600; z-index: 1001; box-shadow: var(--shadow-medium);">
+                        🔄 Nouvelle version disponible ! 
+                        <button onclick="location.reload()" style="background: var(--primary-color);
+                                color: white; border: none; padding: 8px 16px; border-radius: 20px;
+                                margin-left: 10px; cursor: pointer;">Actualiser</button>
+                    </div>
+                `;
+                document.body.appendChild(banner);
+            }
+        }
         
-        logoContainer.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.open('/zplace/ZPlace_Logo_C.I.png', '_blank');
+        // ========================================
+        // GESTION DE L'INTERFACE
+        // ========================================
+        
+        class UIManager {
+            constructor() {
+                this.logoContainer = document.getElementById('logoContainer');
+                this.init();
+            }
+            
+            init() {
+                this.setupLogoClick();
+                this.updateTimestamp();
+                this.preloadAssets();
+            }
+            
+            setupLogoClick() {
+                this.logoContainer.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.open('/zplace/ZPlace_Logo_C.I.png', '_blank');
+                });
+            }
+            
+            updateTimestamp() {
+                const timestamp = document.getElementById('timestamp');
+                if (timestamp) {
+                    timestamp.textContent = 'Dernière mise à jour : ' + new Date().toLocaleString('fr-FR');
+                }
+            }
+            
+            preloadAssets() {
+                const preloadImage = new Image();
+                preloadImage.src = '/zplace/ZPlace_Logo_C.I.png';
+                
+                // DNS prefetch pour les liens externes
+                ['//github.com', '//discord.gg'].forEach(domain => {
+                    const link = document.createElement('link');
+                    link.rel = 'dns-prefetch';
+                    link.href = domain;
+                    document.head.appendChild(link);
+                });
+            }
+        }
+        
+        // ========================================
+        // INITIALISATION
+        // ========================================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Initialisation Cendres Incandescentes ZPlace...');
+            
+            new PWAManager();
+            new UIManager();
+            
+            console.log('✅ Application initialisée !');
         });
-        
-        // Préchargement de l'image pour un affichage plus fluide
-        const preloadImage = new Image();
-        preloadImage.src = '/zplace/ZPlace_Logo_C.I.png';
+    </script>
     </script>
 </body>
 </html>

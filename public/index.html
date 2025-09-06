@@ -70,16 +70,24 @@
         }
 
         .logo-container.zoomed {
-            max-width: 600px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            max-width: none;
+            margin: 0;
+            border-radius: 0;
             cursor: zoom-out;
-            z-index: 100;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: none;
         }
 
         .logo {
             width: 100%;
             height: auto;
-            transition: transform 0.5s ease, filter 0.3s ease;
+            transition: all 0.5s ease;
             image-rendering: pixelated;
             image-rendering: -moz-crisp-edges;
             image-rendering: crisp-edges;
@@ -91,7 +99,11 @@
         }
 
         .logo-container.zoomed .logo {
-            transform: scale(2);
+            width: auto;
+            height: auto;
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
             filter: brightness(1.1) contrast(1.05);
         }
 
@@ -113,7 +125,16 @@
         }
 
         .logo-container.zoomed .zoom-instructions {
-            opacity: 0;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 16px;
+            border-radius: 20px;
+            opacity: 1;
+            z-index: 1001;
         }
 
         .description {
@@ -189,13 +210,10 @@
                 margin: 10px;
             }
             
-            .logo-container.zoomed {
-                max-width: 500px;
-            }
-            
-            .zoom-instructions {
-                bottom: -25px;
+            .logo-container.zoomed .zoom-instructions {
+                bottom: 15px;
                 font-size: 0.7rem;
+                padding: 6px 12px;
             }
             
             .links a {
@@ -281,20 +299,20 @@
             if (isZoomed) {
                 logoContainer.classList.add('zoomed');
                 logoContainer.style.cursor = 'zoom-out';
-                // Scroll vers l'image pour bien la centrer
-                logoContainer.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center' 
-                });
+                // Bloquer le scroll du body
+                document.body.style.overflow = 'hidden';
             } else {
                 logoContainer.classList.remove('zoomed');
                 logoContainer.style.cursor = 'zoom-in';
+                // Restaurer le scroll du body
+                document.body.style.overflow = 'auto';
             }
         }
         
         // Clic sur l'image pour basculer le zoom
         logoContainer.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             toggleZoom();
         });
         
@@ -305,9 +323,9 @@
             }
         });
         
-        // Clic en dehors de l'image pour dézoomer
+        // Clic en dehors de l'image pour dézoomer (seulement sur le fond noir)
         document.addEventListener('click', (e) => {
-            if (isZoomed && !logoContainer.contains(e.target)) {
+            if (isZoomed && e.target === logoContainer && !logoImage.contains(e.target)) {
                 toggleZoom();
             }
         });
@@ -333,7 +351,7 @@
         function updateInstructions() {
             const instructions = document.querySelector('.zoom-instructions');
             if (isZoomed) {
-                instructions.textContent = '🔍 Cliquez ou Échap pour dézoomer';
+                instructions.textContent = '🔍 Cliquez ou appuyez sur Échap pour fermer';
             } else {
                 instructions.textContent = '🔍 Cliquez pour zoomer';
             }
@@ -344,6 +362,11 @@
         observer.observe(logoContainer, { 
             attributes: true, 
             attributeFilter: ['class'] 
+        });
+        
+        // Empêcher le zoom navigateur sur double-clic
+        logoContainer.addEventListener('dblclick', (e) => {
+            e.preventDefault();
         });
     </script>
 </body>

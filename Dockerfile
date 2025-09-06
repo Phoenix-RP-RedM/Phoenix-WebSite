@@ -1,10 +1,6 @@
 # Utilisation d'une image Node.js Alpine légère et sécurisée
 FROM node:18-alpine
 
-# Ajout d'un utilisateur non-root pour la sécurité
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
-
 # Définition du répertoire de travail
 WORKDIR /app
 
@@ -12,19 +8,19 @@ WORKDIR /app
 COPY package*.json ./
 
 # Installation des dépendances en mode production
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci --omit=dev && npm cache clean --force
 
 # Copie du code source
-COPY --chown=nextjs:nodejs . .
+COPY --chown=node:node . .
 
 # Création du répertoire pour les fichiers statiques avec les bonnes permissions
-RUN mkdir -p /app/public /app/ZPlace && chown -R nextjs:nodejs /app
+RUN mkdir -p /app/public /app/ZPlace && chown -R node:node /app
 
 # Exposition du port
 EXPOSE 3000
 
 # Changement vers l'utilisateur non-root
-USER nextjs
+USER node
 
 # Variables d'environnement
 ENV NODE_ENV=production

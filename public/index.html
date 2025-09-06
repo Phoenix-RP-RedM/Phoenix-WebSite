@@ -58,21 +58,62 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            cursor: zoom-in;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .logo {
-            max-width: 300px;
+            width: 100%;
             height: auto;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
+            transition: transform 0.5s ease, filter 0.3s ease;
             image-rendering: pixelated;
             image-rendering: -moz-crisp-edges;
             image-rendering: crisp-edges;
+            display: block;
         }
 
-        .logo:hover {
-            transform: scale(1.05);
+        .logo-container:hover .logo {
+            transform: scale(2);
+            filter: brightness(1.1) contrast(1.05);
+        }
+
+        .logo-container:hover {
+            cursor: zoom-out;
+            z-index: 1000;
+        }
+
+        .zoom-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            cursor: zoom-out;
+        }
+
+        .zoom-overlay.active {
+            display: flex;
+        }
+
+        .zoom-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
 
         .description {
@@ -152,6 +193,11 @@
                 max-width: 250px;
             }
             
+            .zoom-overlay img {
+                max-width: 95%;
+                max-height: 95%;
+            }
+            
             .links a {
                 display: block;
                 margin: 10px 0;
@@ -177,8 +223,13 @@
             Nous participons fièrement au <strong>ZPlace</strong> de l'événement caritatif <strong>ZEvent</strong>.
         </div>
 
-        <div class="logo-container">
-            <img src="/zplace/ZPlace_Logo_C.I.png" alt="Phoenix Logo en Pixel Art pour ZPlace" class="logo">
+        <div class="logo-container" id="logoContainer">
+            <img src="/zplace/ZPlace_Logo_C.I.png" alt="Phoenix Logo en Pixel Art pour ZPlace" class="logo" id="logoImage">
+        </div>
+
+        <!-- Overlay pour le zoom -->
+        <div class="zoom-overlay" id="zoomOverlay">
+            <img src="/zplace/ZPlace_Logo_C.I.png" alt="Phoenix Logo en Pixel Art pour ZPlace - Vue agrandie">
         </div>
 
         <div class="pixel-art-note">
@@ -222,15 +273,44 @@
         document.getElementById('timestamp').textContent = 
             'Dernière mise à jour : ' + new Date().toLocaleString('fr-FR');
         
-        // Animation du logo au survol
-        const logo = document.querySelector('.logo');
-        logo.addEventListener('mouseenter', () => {
-            logo.style.filter = 'brightness(1.2) contrast(1.1)';
+        // Gestion du zoom de l'image
+        const logoContainer = document.getElementById('logoContainer');
+        const logoImage = document.getElementById('logoImage');
+        const zoomOverlay = document.getElementById('zoomOverlay');
+        
+        // Clic sur l'image pour ouvrir le zoom complet
+        logoContainer.addEventListener('click', (e) => {
+            e.preventDefault();
+            zoomOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
         });
         
-        logo.addEventListener('mouseleave', () => {
-            logo.style.filter = 'none';
+        // Clic sur l'overlay pour fermer le zoom
+        zoomOverlay.addEventListener('click', () => {
+            zoomOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
         });
+        
+        // Fermeture avec la touche Échap
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && zoomOverlay.classList.contains('active')) {
+                zoomOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Animation améliorée au survol
+        logoContainer.addEventListener('mouseenter', () => {
+            logoImage.style.filter = 'brightness(1.2) contrast(1.1) saturate(1.1)';
+        });
+        
+        logoContainer.addEventListener('mouseleave', () => {
+            logoImage.style.filter = 'brightness(1) contrast(1) saturate(1)';
+        });
+        
+        // Préchargement de l'image pour un affichage plus fluide
+        const preloadImage = new Image();
+        preloadImage.src = '/zplace/ZPlace_Logo_C.I.png';
     </script>
 </body>
 </html>

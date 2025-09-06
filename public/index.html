@@ -59,13 +59,21 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            overflow: hidden;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             cursor: zoom-in;
             max-width: 300px;
             margin-left: auto;
             margin-right: auto;
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+
+        .logo-container.zoomed {
+            max-width: 600px;
+            cursor: zoom-out;
+            z-index: 100;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
         }
 
         .logo {
@@ -79,41 +87,33 @@
         }
 
         .logo-container:hover .logo {
+            filter: brightness(1.1) contrast(1.05) saturate(1.1);
+        }
+
+        .logo-container.zoomed .logo {
             transform: scale(2);
             filter: brightness(1.1) contrast(1.05);
         }
 
-        .logo-container:hover {
-            cursor: zoom-out;
-            z-index: 1000;
+        .zoom-instructions {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            white-space: nowrap;
         }
 
-        .zoom-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            cursor: zoom-out;
+        .logo-container:hover .zoom-instructions {
+            opacity: 1;
         }
 
-        .zoom-overlay.active {
-            display: flex;
-        }
-
-        .zoom-overlay img {
-            max-width: 90%;
-            max-height: 90%;
-            image-rendering: pixelated;
-            image-rendering: -moz-crisp-edges;
-            image-rendering: crisp-edges;
-            border-radius: 10px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        .logo-container.zoomed .zoom-instructions {
+            opacity: 0;
         }
 
         .description {
@@ -189,13 +189,13 @@
                 margin: 10px;
             }
             
-            .logo {
-                max-width: 250px;
+            .logo-container.zoomed {
+                max-width: 500px;
             }
             
-            .zoom-overlay img {
-                max-width: 95%;
-                max-height: 95%;
+            .zoom-instructions {
+                bottom: -25px;
+                font-size: 0.7rem;
             }
             
             .links a {
@@ -225,11 +225,7 @@
 
         <div class="logo-container" id="logoContainer">
             <img src="/zplace/ZPlace_Logo_C.I.png" alt="Phoenix Logo en Pixel Art pour ZPlace" class="logo" id="logoImage">
-        </div>
-
-        <!-- Overlay pour le zoom -->
-        <div class="zoom-overlay" id="zoomOverlay">
-            <img src="/zplace/ZPlace_Logo_C.I.png" alt="Phoenix Logo en Pixel Art pour ZPlace - Vue agrandie">
+            <div class="zoom-instructions">🔍 Cliquez pour zoomer</div>
         </div>
 
         <div class="pixel-art-note">
@@ -276,41 +272,79 @@
         // Gestion du zoom de l'image
         const logoContainer = document.getElementById('logoContainer');
         const logoImage = document.getElementById('logoImage');
-        const zoomOverlay = document.getElementById('zoomOverlay');
+        let isZoomed = false;
         
-        // Clic sur l'image pour ouvrir le zoom complet
+        // Fonction pour basculer le zoom
+        function toggleZoom() {
+            isZoomed = !isZoomed;
+            
+            if (isZoomed) {
+                logoContainer.classList.add('zoomed');
+                logoContainer.style.cursor = 'zoom-out';
+                // Scroll vers l'image pour bien la centrer
+                logoContainer.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            } else {
+                logoContainer.classList.remove('zoomed');
+                logoContainer.style.cursor = 'zoom-in';
+            }
+        }
+        
+        // Clic sur l'image pour basculer le zoom
         logoContainer.addEventListener('click', (e) => {
             e.preventDefault();
-            zoomOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        });
-        
-        // Clic sur l'overlay pour fermer le zoom
-        zoomOverlay.addEventListener('click', () => {
-            zoomOverlay.classList.remove('active');
-            document.body.style.overflow = 'auto';
+            toggleZoom();
         });
         
         // Fermeture avec la touche Échap
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && zoomOverlay.classList.contains('active')) {
-                zoomOverlay.classList.remove('active');
-                document.body.style.overflow = 'auto';
+            if (e.key === 'Escape' && isZoomed) {
+                toggleZoom();
             }
         });
         
-        // Animation améliorée au survol
+        // Clic en dehors de l'image pour dézoomer
+        document.addEventListener('click', (e) => {
+            if (isZoomed && !logoContainer.contains(e.target)) {
+                toggleZoom();
+            }
+        });
+        
+        // Animation améliorée au survol (uniquement si pas zoomé)
         logoContainer.addEventListener('mouseenter', () => {
-            logoImage.style.filter = 'brightness(1.2) contrast(1.1) saturate(1.1)';
+            if (!isZoomed) {
+                logoImage.style.filter = 'brightness(1.1) contrast(1.05) saturate(1.1)';
+            }
         });
         
         logoContainer.addEventListener('mouseleave', () => {
-            logoImage.style.filter = 'brightness(1) contrast(1) saturate(1)';
+            if (!isZoomed) {
+                logoImage.style.filter = 'brightness(1) contrast(1) saturate(1)';
+            }
         });
         
         // Préchargement de l'image pour un affichage plus fluide
         const preloadImage = new Image();
         preloadImage.src = '/zplace/ZPlace_Logo_C.I.png';
+        
+        // Mise à jour du texte d'instruction selon l'état
+        function updateInstructions() {
+            const instructions = document.querySelector('.zoom-instructions');
+            if (isZoomed) {
+                instructions.textContent = '🔍 Cliquez ou Échap pour dézoomer';
+            } else {
+                instructions.textContent = '🔍 Cliquez pour zoomer';
+            }
+        }
+        
+        // Observer les changements de classe pour mettre à jour les instructions
+        const observer = new MutationObserver(updateInstructions);
+        observer.observe(logoContainer, { 
+            attributes: true, 
+            attributeFilter: ['class'] 
+        });
     </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cendres-incandescentes-v2.0.0';
+const CACHE_NAME = 'cendres-incandescentes-v3.0.0';
 const STATIC_ASSETS = [
   '/',
   '/zplace/ZPlace_Logo_C.I.png',

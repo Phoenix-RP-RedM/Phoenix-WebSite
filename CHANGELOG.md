@@ -1,3 +1,21 @@
+# 3.0.0-latest (2025-09-07)
+
+### Security & Performance
+* **Dependencies:** Mise à jour vers les dernières versions sécurisées
+  - Fastify 5.6.0 (dernière version stable)
+  - @fastify/helmet 13.0.1 (sécurité renforcée)
+  - @fastify/compress 8.1.0 (compression optimisée)
+  - @fastify/static 8.2.0 (fichiers statiques améliorés)
+  - @fastify/rate-limit 10.3.0 (protection DDoS)
+  - @fastify/cors 11.1.0 (gestion CORS modernisée)
+* **Security:** 0 vulnérabilité détectée (npm audit clean)
+* **Performance:** Amélioration des performances avec Fastify 5.x
+
+### Technical Improvements
+* **Health Check:** Informations étendues (versions, architecture)
+* **Docker:** Labels mis à jour avec versions des dépendances
+* **Monitoring:** Meilleure visibilité sur les versions utilisées
+
 # 3.0.0 (2025-09-07)
 
 ### Breaking Changes

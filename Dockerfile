@@ -10,9 +10,9 @@ WORKDIR /app
 # Copie des fichiers de dépendances
 COPY package*.json ./
 
-# Installation des dépendances en mode production
-# Utilisation de npm install pour générer un nouveau lock file compatible
-RUN npm install --omit=dev --no-audit --no-fund && \
+# Installation des dépendances en mode production avec npm ci
+# Utilisation de --no-audit et --no-fund pour éviter les warnings non critiques
+RUN npm ci --omit=dev --no-audit --no-fund && \
     npm cache clean --force
 
 # Copie du code source et changement des permissions vers node
@@ -43,8 +43,10 @@ CMD ["node", "server.js"]
 # Labels pour la documentation
 LABEL maintainer="Cendres Incandescentes Team" \
       description="Cendres Incandescentes ZPlace Website for ZEvent charity event" \
-      version="3.0.0" \
+      version="3.0.0-latest" \
       node.version="24" \
+      fastify.version="5.6.0" \
       architecture="ESM" \
+      dependencies="latest-security" \
       org.opencontainers.image.source="https://github.com/phoenix-rp/cendres-incandescentes-zplace" \
       org.opencontainers.image.description="PWA pour l'événement caritatif ZEvent - Cendres Incandescentes"

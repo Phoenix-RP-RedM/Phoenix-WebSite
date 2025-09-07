@@ -71,9 +71,11 @@ async function start() {
       service: 'Cendres Incandescentes ZPlace Website',
       uptime: process.uptime(),
       memory: process.memoryUsage(),
-      version: '3.0.0',
+      version: '3.0.0-latest',
       nodeVersion: process.version,
-      architecture: 'ESM'
+      architecture: 'ESM',
+      fastifyVersion: '5.6.0',
+      dependencies: 'latest'
     }));
 
     // Gestion d'erreurs

@@ -1,6 +1,6 @@
 /**
- * Gestionnaire des notifications PWA
- * Gère l'autorisation, l'abonnement et la configuration des notifications
+ * Gestionnaire des notifications PWA - Version simplifiée
+ * Logique corrigée selon les spécifications
  */
 
 class NotificationManager {
@@ -8,6 +8,7 @@ class NotificationManager {
         this.isSupported = 'Notification' in window && 'serviceWorker' in navigator;
         this.permission = this.isSupported ? Notification.permission : 'denied';
         this.subscription = null;
+        this.isPWAInstalled = false;
         this.init();
     }
 
@@ -30,30 +31,13 @@ class NotificationManager {
         await this.checkExistingSubscription();
     }
 
-    async checkPWAInstallation() {
-        // Méthodes de détection PWA
-        this.isPWAInstalled = 
-            window.matchMedia('(display-mode: standalone)').matches ||
-            window.navigator.standalone ||
-            document.referrer.includes('android-app://') ||
-            window.location.search.includes('homescreen=1');
-        
-        console.log('PWA installée:', this.isPWAInstalled);
-        
-        // Écouter les changements de mode d'affichage (installation/désinstallation PWA)
-        window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
-            console.log('Changement mode PWA détecté:', e.matches);
-            this.isPWAInstalled = e.matches;
-            this.updateUIBasedOnPWAStatus();
-        });
-    }
-
     loadPreferences() {
         this.preferences = {
             enabled: localStorage.getItem('notifications-enabled') === 'true',
-            updates: localStorage.getItem('notifications-updates') !== 'false', // true par défaut
-            events: localStorage.getItem('notifications-events') !== 'false', // true par défaut
-            frequency: localStorage.getItem('notifications-frequency') || 'normal'
+            updates: localStorage.getItem('notifications-updates') !== 'false',
+            events: localStorage.getItem('notifications-events') !== 'false',
+            frequency: localStorage.getItem('notifications-frequency') || 'normal',
+            everActivated: localStorage.getItem('notifications-ever-activated') === 'true'
         };
     }
 
@@ -62,20 +46,41 @@ class NotificationManager {
         localStorage.setItem('notifications-updates', this.preferences.updates);
         localStorage.setItem('notifications-events', this.preferences.events);
         localStorage.setItem('notifications-frequency', this.preferences.frequency);
+        localStorage.setItem('notifications-ever-activated', this.preferences.everActivated);
+    }
+
+    async checkPWAInstallation() {
+        this.isPWAInstalled = 
+            window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone ||
+            document.referrer.includes('android-app://') ||
+            window.location.search.includes('homescreen=1');
+        
+        console.log('PWA installée:', this.isPWAInstalled);
+        
+        // Écouter les changements de mode d'affichage
+        window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
+            console.log('Changement mode PWA détecté:', e.matches);
+            this.isPWAInstalled = e.matches;
+            this.updateUIBasedOnPWAStatus();
+        });
     }
 
     createNotificationUI() {
-        // Déterminer où placer le bouton selon la logique
-        const shouldShowInHeader = this.isPWAInstalled && !this.preferences.enabled && this.permission !== 'denied';
-        const shouldShowInFooter = this.isPWAInstalled && this.permission === 'denied';
+        // Logique simplifiée selon les spécifications :
+        // Header : Bouton UNIQUEMENT si PWA installée ET notifications jamais activées
+        // Footer : Tout le reste (paramètres et aide)
+        
+        const shouldShowInHeader = this.isPWAInstalled && !this.preferences.everActivated && this.permission !== 'denied';
+        const shouldShowInFooter = this.isPWAInstalled && (this.preferences.everActivated || this.permission === 'denied');
         
         if (shouldShowInHeader) {
             this.createHeaderButton();
         } else if (shouldShowInFooter) {
-            this.createFooterNotification();
+            this.createFooterInterface();
         }
 
-        // Créer le panneau de configuration (toujours disponible si autorisé)
+        // Panneau de configuration toujours disponible si autorisé
         if (this.permission !== 'denied') {
             this.createSettingsPanel();
         }
@@ -88,43 +93,87 @@ class NotificationManager {
         const notificationButton = document.createElement('button');
         notificationButton.id = 'notification-toggle';
         notificationButton.className = 'notification-btn';
-        notificationButton.innerHTML = this.getButtonHTML();
-        notificationButton.addEventListener('click', () => this.toggleNotifications());
+        notificationButton.innerHTML = '🔕 <span>Activer les notifications</span>';
+        notificationButton.addEventListener('click', () => this.requestPermissionAndSubscribe());
         
         header.appendChild(notificationButton);
     }
 
-    createFooterNotification() {
+    createFooterInterface() {
         const footer = document.querySelector('.footer');
         if (!footer) return;
 
         const notificationInfo = document.createElement('div');
         notificationInfo.className = 'notification-info';
-        notificationInfo.innerHTML = `
-            <div class="notification-info-content">
-                <span class="notification-icon">�</span>
-                <div class="notification-text">
-                    <p><strong>Notifications bloquées</strong></p>
-                    <p>Vous pouvez les réactiver dans les paramètres de votre navigateur</p>
-                </div>
-                <button class="notification-learn-more" onclick="this.parentElement.parentElement.querySelector('.notification-details').classList.toggle('hidden')">
-                    Comment faire ?
-                </button>
-            </div>
-            <div class="notification-details hidden">
-                <p>Pour réactiver les notifications :</p>
-                <ul>
-                    <li>� Ouvrez les paramètres de votre navigateur</li>
-                    <li>🔔 Allez dans "Notifications" ou "Autorisations"</li>
-                    <li>✅ Autorisez les notifications pour ce site</li>
-                    <li>🔄 Rechargez la page</li>
-                </ul>
-                <p><small>Les notifications vous permettront de recevoir les mises à jour importantes de l'application.</small></p>
-            </div>
-        `;
         
-        // Insérer avant le contenu existant du footer
+        if (this.permission === 'denied') {
+            // Cas : notifications refusées - aide pour réactiver
+            notificationInfo.innerHTML = `
+                <div class="notification-info-content">
+                    <span class="notification-icon">🔕</span>
+                    <div class="notification-text">
+                        <p><strong>Notifications bloquées</strong></p>
+                        <p>Vous pouvez les réactiver dans les paramètres de votre navigateur</p>
+                    </div>
+                    <button class="notification-learn-more" data-action="toggle-help">
+                        Comment faire ?
+                    </button>
+                </div>
+                <div class="notification-details hidden">
+                    <p>Pour réactiver les notifications :</p>
+                    <ul>
+                        <li>🔧 Ouvrez les paramètres de votre navigateur</li>
+                        <li>🔔 Allez dans "Notifications" ou "Autorisations"</li>
+                        <li>✅ Autorisez les notifications pour ce site</li>
+                        <li>🔄 Rechargez la page</li>
+                    </ul>
+                    <p><small>Les notifications vous permettront de recevoir les mises à jour importantes.</small></p>
+                </div>
+            `;
+        } else if (this.preferences.everActivated) {
+            // Cas : notifications déjà activées une fois - gestion des paramètres
+            const isEnabled = this.preferences.enabled;
+            notificationInfo.innerHTML = `
+                <div class="notification-info-content">
+                    <span class="notification-icon">${isEnabled ? '🔔' : '🔕'}</span>
+                    <div class="notification-text">
+                        <p><strong>Notifications ${isEnabled ? 'activées' : 'désactivées'}</strong></p>
+                        <p>Gérez vos préférences de notification</p>
+                    </div>
+                    <button class="notification-learn-more" data-action="open-settings">
+                        ⚙️ Paramètres
+                    </button>
+                </div>
+            `;
+        }
+        
+        this.bindFooterEvents(notificationInfo);
         footer.insertBefore(notificationInfo, footer.firstChild);
+    }
+
+    bindFooterEvents(container) {
+        // Gestionnaire pour l'aide
+        const helpButton = container.querySelector('[data-action="toggle-help"]');
+        if (helpButton) {
+            const detailsDiv = container.querySelector('.notification-details');
+            helpButton.addEventListener('click', () => {
+                detailsDiv.classList.toggle('hidden');
+                helpButton.textContent = detailsDiv.classList.contains('hidden') ? 'Comment faire ?' : 'Masquer';
+            });
+        }
+
+        // Gestionnaire pour les paramètres
+        const settingsButton = container.querySelector('[data-action="open-settings"]');
+        if (settingsButton) {
+            settingsButton.addEventListener('click', () => this.openSettings());
+        }
+    }
+
+    openSettings() {
+        const settingsPanel = document.querySelector('#notification-settings');
+        if (settingsPanel) {
+            settingsPanel.classList.remove('hidden');
+        }
     }
 
     createSettingsPanel() {
@@ -166,7 +215,7 @@ class NotificationManager {
     }
 
     bindSettingsEvents(panel) {
-        // Sauvegarder les paramètres
+        // Sauvegarder
         panel.querySelector('#save-settings').addEventListener('click', () => {
             this.preferences.updates = panel.querySelector('#notify-updates').checked;
             this.preferences.events = panel.querySelector('#notify-events').checked;
@@ -175,7 +224,7 @@ class NotificationManager {
             this.showMessage('Paramètres sauvegardés !', 'success');
         });
 
-        // Tester une notification
+        // Tester
         panel.querySelector('#test-notification').addEventListener('click', () => {
             this.sendTestNotification();
         });
@@ -185,7 +234,7 @@ class NotificationManager {
             this.unsubscribe();
         });
 
-        // Fermer le panneau
+        // Fermer
         panel.querySelector('#close-settings').addEventListener('click', () => {
             panel.classList.add('hidden');
         });
@@ -198,27 +247,6 @@ class NotificationManager {
         });
     }
 
-    getButtonHTML() {
-        if (this.permission === 'denied') {
-            return '🔕 <span>Notifications bloquées</span>';
-        } else if (this.preferences.enabled && this.subscription) {
-            return '🔔 <span>Notifications activées</span>';
-        } else {
-            return '🔕 <span>Activer les notifications</span>';
-        }
-    }
-
-    updateButton() {
-        const button = document.querySelector('#notification-toggle');
-        if (button) {
-            button.innerHTML = this.getButtonHTML();
-            button.disabled = this.permission === 'denied';
-        }
-        
-        // Re-créer l'interface si nécessaire après un changement d'état PWA
-        this.updateUIBasedOnPWAStatus();
-    }
-
     updateUIBasedOnPWAStatus() {
         // Supprimer les éléments existants
         const existingButton = document.querySelector('#notification-toggle');
@@ -227,55 +255,35 @@ class NotificationManager {
         if (existingButton) existingButton.remove();
         if (existingInfo) existingInfo.remove();
         
-        // Re-détecter le statut PWA
+        // Re-créer l'interface appropriée
         this.checkPWAInstallation().then(() => {
-            // Re-créer l'interface appropriée
-            const shouldShowInHeader = this.isPWAInstalled && !this.preferences.enabled && this.permission !== 'denied';
-            const shouldShowInFooter = this.isPWAInstalled && this.permission === 'denied';
+            const shouldShowInHeader = this.isPWAInstalled && !this.preferences.everActivated && this.permission !== 'denied';
+            const shouldShowInFooter = this.isPWAInstalled && (this.preferences.everActivated || this.permission === 'denied');
             
             if (shouldShowInHeader) {
                 this.createHeaderButton();
             } else if (shouldShowInFooter) {
-                this.createFooterNotification();
+                this.createFooterInterface();
             }
         });
     }
 
-    async toggleNotifications() {
-        if (this.permission === 'denied') {
-            this.showMessage('Les notifications sont bloquées. Veuillez les autoriser dans les paramètres de votre navigateur.', 'error');
-            return;
-        }
-
-        if (this.preferences.enabled) {
-            // Ouvrir le panneau de paramètres
-            document.querySelector('#notification-settings').classList.remove('hidden');
-        } else {
-            // Demander l'autorisation et s'abonner
-            await this.requestPermissionAndSubscribe();
-        }
-    }
-
     async requestPermissionAndSubscribe() {
         try {
-            // Demander l'autorisation
             this.permission = await Notification.requestPermission();
             
             if (this.permission === 'granted') {
-                // S'abonner aux notifications push
                 await this.subscribe();
                 this.preferences.enabled = true;
+                this.preferences.everActivated = true; // Marquer comme déjà activé
                 this.savePreferences();
-                this.updateUIBasedOnPWAStatus(); // Mise à jour de l'interface
+                this.updateUIBasedOnPWAStatus();
                 this.showMessage('Notifications activées ! 🎉', 'success');
                 
-                // Envoyer une notification de bienvenue
-                setTimeout(() => {
-                    this.sendWelcomeNotification();
-                }, 1000);
+                setTimeout(() => this.sendWelcomeNotification(), 1000);
             } else {
                 this.showMessage('Permission refusée pour les notifications', 'warning');
-                this.updateUIBasedOnPWAStatus(); // Mise à jour même si refusé
+                this.updateUIBasedOnPWAStatus();
             }
         } catch (error) {
             console.error('Erreur lors de l\'activation des notifications:', error);
@@ -286,8 +294,6 @@ class NotificationManager {
     async subscribe() {
         try {
             const registration = await navigator.serviceWorker.ready;
-            
-            // Clé publique VAPID (à remplacer par votre vraie clé)
             const vapidPublicKey = 'BEl62iUYgUivxIkv69yViEuiBIa40HI9stpf_kznoHRBSTtfn2H-YsGnVeRWqf_w8D8tVbp_r1pSUjT0HDkQZC0';
             
             this.subscription = await registration.pushManager.subscribe({
@@ -296,10 +302,6 @@ class NotificationManager {
             });
 
             console.log('Abonnement réussi:', this.subscription);
-            
-            // Envoyer l'abonnement au serveur (optionnel)
-            // await this.sendSubscriptionToServer(this.subscription);
-            
         } catch (error) {
             console.error('Erreur lors de l\'abonnement:', error);
             throw error;
@@ -315,11 +317,10 @@ class NotificationManager {
             
             this.preferences.enabled = false;
             this.savePreferences();
-            this.updateButton();
+            this.updateUIBasedOnPWAStatus();
             
             document.querySelector('#notification-settings').classList.add('hidden');
             this.showMessage('Vous êtes désabonné des notifications', 'info');
-            
         } catch (error) {
             console.error('Erreur lors du désabonnement:', error);
             this.showMessage('Erreur lors du désabonnement', 'error');
@@ -333,7 +334,6 @@ class NotificationManager {
             
             if (this.subscription && this.preferences.enabled) {
                 console.log('Abonnement existant trouvé');
-                this.updateButton();
             }
         } catch (error) {
             console.error('Erreur lors de la vérification de l\'abonnement:', error);
@@ -345,10 +345,7 @@ class NotificationManager {
             new Notification('🔥 Cendres Incandescentes', {
                 body: 'Notifications activées ! Vous recevrez les mises à jour importantes.',
                 icon: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
-                badge: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
-                tag: 'welcome',
-                requireInteraction: false,
-                silent: false
+                tag: 'welcome'
             });
         }
     }
@@ -356,38 +353,30 @@ class NotificationManager {
     sendTestNotification() {
         if (this.permission === 'granted') {
             new Notification('🧪 Test de notification', {
-                body: 'Ceci est un test ! Vos notifications fonctionnent parfaitement.',
+                body: 'Vos notifications fonctionnent parfaitement !',
                 icon: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
-                badge: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
-                tag: 'test',
-                requireInteraction: false,
-                silent: false
+                tag: 'test'
             });
         } else {
             this.showMessage('Les notifications ne sont pas autorisées', 'warning');
         }
     }
 
-    // Méthode pour envoyer des notifications depuis d'autres parties de l'app
     async sendNotification(title, options = {}) {
         if (!this.preferences.enabled || this.permission !== 'granted') {
             return false;
         }
 
-        // Vérifier les préférences de type de notification
         if (options.type === 'update' && !this.preferences.updates) return false;
         if (options.type === 'event' && !this.preferences.events) return false;
 
-        // Appliquer la fréquence
         if (this.preferences.frequency === 'minimal' && options.priority !== 'high') {
             return false;
         }
 
         const defaultOptions = {
             icon: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
-            badge: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
-            requireInteraction: false,
-            silent: false
+            badge: '/Logo-Cendres_Incandescentes-Fond_transparent.png'
         };
 
         new Notification(title, { ...defaultOptions, ...options });
@@ -395,7 +384,6 @@ class NotificationManager {
     }
 
     showMessage(message, type = 'info') {
-        // Créer ou réutiliser un élément de message
         let messageEl = document.querySelector('#notification-message');
         if (!messageEl) {
             messageEl = document.createElement('div');
@@ -412,7 +400,6 @@ class NotificationManager {
         }, 3000);
     }
 
-    // Utilitaire pour convertir la clé VAPID
     urlBase64ToUint8Array(base64String) {
         const padding = '='.repeat((4 - base64String.length % 4) % 4);
         const base64 = (base64String + padding)
@@ -429,5 +416,4 @@ class NotificationManager {
     }
 }
 
-// Export pour utilisation dans d'autres modules
 export default NotificationManager;

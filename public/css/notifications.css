@@ -47,6 +47,19 @@
     left: 100%;
 }
 
+/* Bouton de paramètres spécialisé */
+.notification-settings-btn {
+    background: linear-gradient(135deg, var(--accent-info), #2980b9);
+}
+
+.notification-settings-btn:hover {
+    background: linear-gradient(135deg, #2980b9, #1f5f8b);
+}
+
+.notification-settings-btn span {
+    font-size: 0.85rem;
+}
+
 /* Panneau de paramètres */
 .notification-settings {
     position: fixed;

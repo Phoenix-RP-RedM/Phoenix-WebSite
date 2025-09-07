@@ -9,6 +9,8 @@ class NotificationManager {
         this.permission = this.isSupported ? Notification.permission : 'denied';
         this.subscription = null;
         this.isPWAInstalled = false;
+        this.isAndroid = /Android/i.test(navigator.userAgent);
+        this.isChrome = /Chrome/i.test(navigator.userAgent);
         this.init();
     }
 
@@ -204,6 +206,7 @@ class NotificationManager {
                 <div class="settings-actions">
                     <button id="save-settings" class="btn-primary">💾 Sauvegarder</button>
                     <button id="test-notification" class="btn-secondary">🧪 Tester</button>
+                    <button id="diagnose-notifications" class="btn-info">🔍 Diagnostic</button>
                     <button id="unsubscribe-notifications" class="btn-danger">🚫 Se désabonner</button>
                 </div>
                 <button id="close-settings" class="close-btn">✕</button>
@@ -227,6 +230,11 @@ class NotificationManager {
         // Tester
         panel.querySelector('#test-notification').addEventListener('click', () => {
             this.sendTestNotification();
+        });
+
+        // Diagnostic
+        panel.querySelector('#diagnose-notifications').addEventListener('click', () => {
+            this.diagnoseNotifications();
         });
 
         // Se désabonner
@@ -270,6 +278,12 @@ class NotificationManager {
 
     async requestPermissionAndSubscribe() {
         try {
+            // Sur Android Chrome, attendre que le SW soit prêt avant de demander la permission
+            if (this.isAndroid && this.isChrome) {
+                await navigator.serviceWorker.ready;
+                console.log('🤖 Android détecté, Service Worker prêt');
+            }
+
             this.permission = await Notification.requestPermission();
             
             if (this.permission === 'granted') {
@@ -280,7 +294,9 @@ class NotificationManager {
                 this.updateUIBasedOnPWAStatus();
                 this.showMessage('Notifications activées ! 🎉', 'success');
                 
-                setTimeout(() => this.sendWelcomeNotification(), 1000);
+                // Attendre un peu plus sur Android avant d'envoyer la notification de bienvenue
+                const delay = this.isAndroid ? 2000 : 1000;
+                setTimeout(() => this.sendWelcomeNotification(), delay);
             } else {
                 this.showMessage('Permission refusée pour les notifications', 'warning');
                 this.updateUIBasedOnPWAStatus();
@@ -342,21 +358,64 @@ class NotificationManager {
 
     sendWelcomeNotification() {
         if (this.permission === 'granted') {
-            new Notification('🔥 Cendres Incandescentes', {
-                body: 'Notifications activées ! Vous recevrez les mises à jour importantes.',
-                icon: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
-                tag: 'welcome'
-            });
+            // Sur mobile/Android, utiliser le Service Worker au lieu de new Notification()
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                this.sendServiceWorkerNotification('🔥 Cendres Incandescentes', {
+                    body: 'Notifications activées ! Vous recevrez les mises à jour importantes.',
+                    icon: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
+                    badge: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
+                    tag: 'welcome',
+                    requireInteraction: false,
+                    actions: [
+                        {
+                            action: 'open',
+                            title: '👀 Voir',
+                            icon: '/Logo-Cendres_Incandescentes-Fond_transparent.png'
+                        }
+                    ]
+                });
+            } else {
+                // Fallback pour desktop
+                new Notification('🔥 Cendres Incandescentes', {
+                    body: 'Notifications activées ! Vous recevrez les mises à jour importantes.',
+                    icon: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
+                    tag: 'welcome'
+                });
+            }
         }
     }
 
     sendTestNotification() {
         if (this.permission === 'granted') {
-            new Notification('🧪 Test de notification', {
-                body: 'Vos notifications fonctionnent parfaitement !',
-                icon: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
-                tag: 'test'
-            });
+            // Sur mobile/Android, utiliser le Service Worker au lieu de new Notification()
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                this.sendServiceWorkerNotification('🧪 Test de notification', {
+                    body: 'Vos notifications fonctionnent parfaitement !',
+                    icon: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
+                    badge: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
+                    tag: 'test',
+                    requireInteraction: true,
+                    vibrate: [200, 100, 200],
+                    actions: [
+                        {
+                            action: 'open',
+                            title: '👀 Voir',
+                            icon: '/Logo-Cendres_Incandescentes-Fond_transparent.png'
+                        },
+                        {
+                            action: 'close',
+                            title: '✕ Fermer'
+                        }
+                    ]
+                });
+            } else {
+                // Fallback pour desktop
+                new Notification('🧪 Test de notification', {
+                    body: 'Vos notifications fonctionnent parfaitement !',
+                    icon: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
+                    tag: 'test'
+                });
+            }
         } else {
             this.showMessage('Les notifications ne sont pas autorisées', 'warning');
         }
@@ -376,11 +435,69 @@ class NotificationManager {
 
         const defaultOptions = {
             icon: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
-            badge: '/Logo-Cendres_Incandescentes-Fond_transparent.png'
+            badge: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
+            vibrate: [200, 100, 200], // Vibration pour Android
+            requireInteraction: options.priority === 'high'
         };
 
-        new Notification(title, { ...defaultOptions, ...options });
-        return true;
+        const notificationOptions = { ...defaultOptions, ...options };
+
+        // Sur mobile/Android, utiliser le Service Worker
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            return this.sendServiceWorkerNotification(title, notificationOptions);
+        } else {
+            // Fallback pour desktop
+            new Notification(title, notificationOptions);
+            return true;
+        }
+    }
+
+    async sendServiceWorkerNotification(title, options) {
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            
+            // Sur Android, ajouter des options spécifiques
+            if (this.isAndroid) {
+                options = {
+                    ...options,
+                    vibrate: options.vibrate || [200, 100, 200],
+                    silent: false,
+                    renotify: true,
+                    requireInteraction: options.requireInteraction || false
+                };
+            }
+            
+            await registration.showNotification(title, options);
+            console.log('📱 Notification envoyée via Service Worker:', title);
+            
+            // Sur Android, vérifier que la notification est bien apparue
+            if (this.isAndroid) {
+                setTimeout(() => {
+                    this.checkNotificationDisplay();
+                }, 500);
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('❌ Erreur envoi notification SW:', error);
+            this.showMessage('Erreur lors de l\'envoi de la notification', 'error');
+            return false;
+        }
+    }
+
+    async checkNotificationDisplay() {
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            const notifications = await registration.getNotifications();
+            console.log('🔔 Notifications actives:', notifications.length);
+            
+            if (notifications.length === 0 && this.isAndroid) {
+                console.warn('⚠️ Aucune notification active détectée sur Android');
+                this.showMessage('Vérifiez les paramètres de notification Android', 'warning');
+            }
+        } catch (error) {
+            console.error('Erreur vérification notifications:', error);
+        }
     }
 
     showMessage(message, type = 'info') {
@@ -413,6 +530,35 @@ class NotificationManager {
             outputArray[i] = rawData.charCodeAt(i);
         }
         return outputArray;
+    }
+
+    // Fonction de diagnostic pour Android
+    async diagnoseNotifications() {
+        const diagnosis = {
+            platform: this.isAndroid ? 'Android' : 'Autre',
+            browser: this.isChrome ? 'Chrome' : 'Autre',
+            notificationSupport: this.isSupported,
+            permission: this.permission,
+            serviceWorkerReady: false,
+            pushManagerAvailable: false,
+            subscription: !!this.subscription
+        };
+
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            diagnosis.serviceWorkerReady = true;
+            diagnosis.pushManagerAvailable = !!registration.pushManager;
+        } catch (error) {
+            console.error('Service Worker non disponible:', error);
+        }
+
+        console.table(diagnosis);
+        
+        if (this.isAndroid && !diagnosis.serviceWorkerReady) {
+            this.showMessage('Service Worker requis pour les notifications Android', 'warning');
+        }
+        
+        return diagnosis;
     }
 }
 

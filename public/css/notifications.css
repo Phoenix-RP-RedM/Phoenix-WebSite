@@ -204,6 +204,16 @@
     transform: translateY(-1px);
 }
 
+.btn-info {
+    background: #3498db;
+    color: var(--text-light);
+}
+
+.btn-info:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
+}
+
 .close-btn {
     position: absolute;
     top: var(--spacing-sm);

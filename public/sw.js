@@ -129,6 +129,9 @@ self.addEventListener('push', event => {
     badge: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
     tag: 'default',
     requireInteraction: false,
+    vibrate: [200, 100, 200], // Vibration pour Android
+    silent: false, // Assurer que la notification fait du bruit
+    renotify: true, // Permettre les notifications répétées
     actions: [
       {
         action: 'open',
@@ -141,7 +144,8 @@ self.addEventListener('push', event => {
       }
     ],
     data: {
-      url: '/'
+      url: '/',
+      timestamp: Date.now()
     }
   };
 
@@ -157,6 +161,12 @@ self.addEventListener('push', event => {
 
   event.waitUntil(
     self.registration.showNotification(notificationData.title, notificationData)
+      .then(() => {
+        console.log('✅ Notification affichée avec succès');
+      })
+      .catch(error => {
+        console.error('❌ Erreur affichage notification:', error);
+      })
   );
 });
 

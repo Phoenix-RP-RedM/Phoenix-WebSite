@@ -20,11 +20,32 @@ class NotificationManager {
         // Charger les préférences utilisateur
         this.loadPreferences();
         
+        // Détecter si PWA est installée
+        await this.checkPWAInstallation();
+        
         // Créer l'interface de gestion des notifications
         this.createNotificationUI();
         
         // Vérifier si l'utilisateur est déjà abonné
         await this.checkExistingSubscription();
+    }
+
+    async checkPWAInstallation() {
+        // Méthodes de détection PWA
+        this.isPWAInstalled = 
+            window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone ||
+            document.referrer.includes('android-app://') ||
+            window.location.search.includes('homescreen=1');
+        
+        console.log('PWA installée:', this.isPWAInstalled);
+        
+        // Écouter les changements de mode d'affichage (installation/désinstallation PWA)
+        window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
+            console.log('Changement mode PWA détecté:', e.matches);
+            this.isPWAInstalled = e.matches;
+            this.updateUIBasedOnPWAStatus();
+        });
     }
 
     loadPreferences() {
@@ -44,7 +65,23 @@ class NotificationManager {
     }
 
     createNotificationUI() {
-        // Créer le bouton principal dans le header
+        // Déterminer où placer le bouton selon la logique
+        const shouldShowInHeader = this.isPWAInstalled && !this.preferences.enabled && this.permission !== 'denied';
+        const shouldShowInFooter = this.isPWAInstalled && this.permission === 'denied';
+        
+        if (shouldShowInHeader) {
+            this.createHeaderButton();
+        } else if (shouldShowInFooter) {
+            this.createFooterNotification();
+        }
+
+        // Créer le panneau de configuration (toujours disponible si autorisé)
+        if (this.permission !== 'denied') {
+            this.createSettingsPanel();
+        }
+    }
+
+    createHeaderButton() {
         const header = document.querySelector('.header');
         if (!header) return;
 
@@ -55,9 +92,39 @@ class NotificationManager {
         notificationButton.addEventListener('click', () => this.toggleNotifications());
         
         header.appendChild(notificationButton);
+    }
 
-        // Créer le panneau de configuration
-        this.createSettingsPanel();
+    createFooterNotification() {
+        const footer = document.querySelector('.footer');
+        if (!footer) return;
+
+        const notificationInfo = document.createElement('div');
+        notificationInfo.className = 'notification-info';
+        notificationInfo.innerHTML = `
+            <div class="notification-info-content">
+                <span class="notification-icon">�</span>
+                <div class="notification-text">
+                    <p><strong>Notifications bloquées</strong></p>
+                    <p>Vous pouvez les réactiver dans les paramètres de votre navigateur</p>
+                </div>
+                <button class="notification-learn-more" onclick="this.parentElement.parentElement.querySelector('.notification-details').classList.toggle('hidden')">
+                    Comment faire ?
+                </button>
+            </div>
+            <div class="notification-details hidden">
+                <p>Pour réactiver les notifications :</p>
+                <ul>
+                    <li>� Ouvrez les paramètres de votre navigateur</li>
+                    <li>🔔 Allez dans "Notifications" ou "Autorisations"</li>
+                    <li>✅ Autorisez les notifications pour ce site</li>
+                    <li>🔄 Rechargez la page</li>
+                </ul>
+                <p><small>Les notifications vous permettront de recevoir les mises à jour importantes de l'application.</small></p>
+            </div>
+        `;
+        
+        // Insérer avant le contenu existant du footer
+        footer.insertBefore(notificationInfo, footer.firstChild);
     }
 
     createSettingsPanel() {
@@ -147,6 +214,31 @@ class NotificationManager {
             button.innerHTML = this.getButtonHTML();
             button.disabled = this.permission === 'denied';
         }
+        
+        // Re-créer l'interface si nécessaire après un changement d'état PWA
+        this.updateUIBasedOnPWAStatus();
+    }
+
+    updateUIBasedOnPWAStatus() {
+        // Supprimer les éléments existants
+        const existingButton = document.querySelector('#notification-toggle');
+        const existingInfo = document.querySelector('.notification-info');
+        
+        if (existingButton) existingButton.remove();
+        if (existingInfo) existingInfo.remove();
+        
+        // Re-détecter le statut PWA
+        this.checkPWAInstallation().then(() => {
+            // Re-créer l'interface appropriée
+            const shouldShowInHeader = this.isPWAInstalled && !this.preferences.enabled && this.permission !== 'denied';
+            const shouldShowInFooter = this.isPWAInstalled && this.permission === 'denied';
+            
+            if (shouldShowInHeader) {
+                this.createHeaderButton();
+            } else if (shouldShowInFooter) {
+                this.createFooterNotification();
+            }
+        });
     }
 
     async toggleNotifications() {
@@ -174,7 +266,7 @@ class NotificationManager {
                 await this.subscribe();
                 this.preferences.enabled = true;
                 this.savePreferences();
-                this.updateButton();
+                this.updateUIBasedOnPWAStatus(); // Mise à jour de l'interface
                 this.showMessage('Notifications activées ! 🎉', 'success');
                 
                 // Envoyer une notification de bienvenue
@@ -183,6 +275,7 @@ class NotificationManager {
                 }, 1000);
             } else {
                 this.showMessage('Permission refusée pour les notifications', 'warning');
+                this.updateUIBasedOnPWAStatus(); // Mise à jour même si refusé
             }
         } catch (error) {
             console.error('Erreur lors de l\'activation des notifications:', error);

@@ -1,0 +1,96 @@
+/* ========================================
+   INDICATEURS ET STATES
+   ======================================== */
+
+/* Indicateur de connexion */
+.offline-indicator {
+    position: fixed;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    background: var(--primary-color);
+    color: white;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-lg);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    transform: translateY(-100px);
+    opacity: 0;
+    transition: var(--transition);
+    z-index: 1000;
+    box-shadow: var(--shadow-medium);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.offline-indicator.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.online-indicator {
+    background: var(--success-color) !important;
+}
+
+/* États de chargement */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+    filter: blur(1px);
+}
+
+/* Animation de pulsation */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* États d'erreur */
+.error-state {
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    margin: var(--spacing-sm) 0;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+/* Mode sombre optimisé pour PWA */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-primary: #0a0a0a;
+        --bg-secondary: #1a1a1a;
+        --text-light: #f8f9fa;
+    }
+}
+
+/* Optimisations pour les écrans haute résolution */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .logo {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Améliorations pour les animations sur mobile */
+@media (hover: none) and (pointer: coarse) {
+    .logo-container:hover {
+        transform: none;
+    }
+    
+    .logo-container:active {
+        transform: scale(0.98);
+    }
+    
+    .links a:hover {
+        transform: none;
+    }
+    
+    .links a:active {
+        transform: scale(0.98);
+    }
+}

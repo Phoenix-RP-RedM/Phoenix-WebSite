@@ -1,0 +1,175 @@
+/* ========================================
+   STYLES DES COMPOSANTS
+   ======================================== */
+
+/* En-tête */
+.header {
+    margin-bottom: var(--spacing-lg);
+}
+
+.title {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-sm);
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+    font-weight: 300;
+}
+
+/* Logo container avec responsive */
+.logo-container {
+    margin: var(--spacing-lg) 0;
+    cursor: pointer;
+    transition: var(--transition);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-sm);
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-medium);
+}
+
+.logo-container:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: var(--shadow-strong);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.logo-container:active {
+    transform: translateY(-2px) scale(1.01);
+}
+
+.logo {
+    width: 100%;
+    height: auto;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+/* Responsive logo sizing */
+@media (max-width: 767px) {
+    .logo {
+        max-width: 280px;
+    }
+}
+
+@media (min-width: 768px) {
+    .logo {
+        max-width: 400px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .logo {
+        max-width: 500px;
+    }
+}
+
+@media (min-width: 1440px) {
+    .logo {
+        max-width: 600px;
+    }
+}
+
+/* Description sections */
+.description {
+    margin: var(--spacing-lg) 0;
+    padding: var(--spacing-md);
+    background: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    border-left: 4px solid var(--primary-color);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-soft);
+}
+
+.description h3 {
+    color: var(--accent-color);
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+}
+
+.description p {
+    line-height: 1.6;
+    color: var(--text-light);
+    font-size: var(--font-size-base);
+}
+
+/* Responsive description */
+@media (min-width: 768px) {
+    .description {
+        padding: var(--spacing-lg);
+    }
+    
+    .description h3 {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .description p {
+        font-size: var(--font-size-lg);
+    }
+}
+
+/* Liens */
+.links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin: var(--spacing-lg) 0;
+}
+
+@media (min-width: 768px) {
+    .links {
+        flex-direction: row;
+        justify-content: center;
+        gap: var(--spacing-lg);
+    }
+}
+
+.links a {
+    display: inline-block;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    text-decoration: none;
+    border-radius: var(--border-radius-lg);
+    font-weight: 600;
+    transition: var(--transition);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.links a:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
+    filter: brightness(1.1);
+}
+
+.links a:active {
+    transform: translateY(-1px);
+}
+
+/* Footer */
+.footer {
+    margin-top: var(--spacing-xl);
+    font-size: var(--font-size-sm);
+    opacity: 0.7;
+    text-align: center;
+    padding: var(--spacing-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (min-width: 768px) {
+    .footer {
+        font-size: var(--font-size-base);
+    }
+}

@@ -1,23 +1,23 @@
 {
-  "name": "Cendres Incandescentes ZPlace",
-  "short_name": "CI ZPlace",
-  "description": "Logo Cendres Incandescentes en pixel art pour l'événement caritatif ZEvent - ZPlace",
+  "name": "Cendres Incandescentes - ZEvent 2025",
+  "short_name": "Cendres Inc.",
+  "description": "Projet Phoenix Framework - Logo pixel art pour ZEvent 2025",
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#667eea",
-  "background_color": "#ffffff",
+  "theme_color": "#e74c3c",
+  "background_color": "#1a1a1a",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "fr",
   "icons": [
     {
-      "src": "/zplace/ZPlace_Logo_C.I.png",
+      "src": "/zplace/Logo-Cendres_Incandescentes-Fond_transparent.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/zplace/ZPlace_Logo_C.I.png",
+      "src": "/zplace/Logo-Cendres_Incandescentes-Fond_transparent.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -26,7 +26,7 @@
   "categories": ["games", "entertainment", "social"],
   "screenshots": [
     {
-      "src": "/zplace/ZPlace_Logo_C.I.png",
+      "src": "/zplace/Logo-Cendres_Incandescentes-Fond_transparent.png",
       "sizes": "1280x720",
       "type": "image/png",
       "platform": "wide"

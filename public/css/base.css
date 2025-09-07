@@ -1,0 +1,91 @@
+/* ========================================
+   STYLES DE BASE ET RESET
+   ======================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 100%;
+    /* Suppression de la zone bleue sur mobile */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+body {
+    font-family: var(--font-primary);
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    color: var(--text-light);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+    
+    /* PWA : Suppression des barres système sur mobile */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Animation de fond */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(231, 76, 60, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(243, 156, 18, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(39, 174, 96, 0.05) 0%, transparent 50%);
+    z-index: -1;
+    animation: backgroundPulse 10s ease-in-out infinite alternate;
+}
+
+@keyframes backgroundPulse {
+    0% { opacity: 0.3; }
+    100% { opacity: 0.7; }
+}
+
+/* Responsive Design - Mobile First */
+.container {
+    width: var(--content-width-mobile);
+    max-width: var(--content-max-width);
+    padding: var(--spacing-sm);
+    text-align: center;
+    z-index: 1;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+    .container {
+        width: var(--content-width-tablet);
+        padding: var(--spacing-md);
+    }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+    .container {
+        width: var(--content-width-desktop);
+        padding: var(--spacing-lg);
+    }
+}
+
+/* Large Desktop */
+@media (min-width: 1440px) {
+    .container {
+        width: 65vw;
+        padding: var(--spacing-xl);
+    }
+}

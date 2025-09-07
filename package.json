@@ -1,7 +1,8 @@
 {
   "name": "cendres-incandescentes-zplace-website",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Site web PWA pour présenter le logo Cendres Incandescentes ZPlace pour l'événement caritatif ZEvent",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -16,22 +17,25 @@
     "charity",
     "caritatif",
     "pwa",
-    "service-worker"
+    "service-worker",
+    "esm",
+    "fastify"
   ],
   "author": "Cendres Incandescentes Team",
   "license": "MIT",
   "dependencies": {
-    "fastify": "^4.24.3",
-    "@fastify/helmet": "^11.1.1",
-    "@fastify/compress": "^6.4.0",
-    "@fastify/static": "^6.12.0",
-    "@fastify/rate-limit": "^8.0.3",
-    "@fastify/cors": "^8.4.0"
+    "fastify": "^5.0.0",
+    "@fastify/helmet": "^12.0.0",
+    "@fastify/compress": "^7.0.3",
+    "@fastify/static": "^7.0.4",
+    "@fastify/rate-limit": "^9.1.0",
+    "@fastify/cors": "^9.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.1.4"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=24.0.0",
+    "npm": ">=10.0.0"
   }
 }

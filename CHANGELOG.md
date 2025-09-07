@@ -1,3 +1,32 @@
+# 3.0.0 (2025-09-07)
+
+### Breaking Changes
+* **Node.js:** Migration vers Node.js 24.x (dernière LTS)
+* **ESM:** Conversion complète vers les modules ES (ESM) natifs
+* **Architecture:** Refactorisation modulaire avec séparation CSS/JS
+
+### Features
+* **CSS Modulaire:** Séparation du CSS en fichiers dédiés
+  - `variables.css` : Variables CSS globales et design tokens
+  - `base.css` : Styles de base et reset avec optimisations PWA
+  - `components.css` : Composants UI avec responsive design amélioré
+  - `states.css` : États et indicateurs visuels
+* **Responsive Design:** Optimisation pour tous les écrans
+  - Media queries adaptatives (mobile → desktop)
+  - Tailles de contenu dynamiques selon la résolution
+  - Suppression de la zone bleue sur mobile
+  - Support des safe-area-inset pour PWA
+* **Logo Upgrade:** Utilisation du nouveau logo haute résolution
+* **Contenu:** Amélioration des textes avec distinction Phoenix/Cendres Incandescentes
+
+### Technical
+* **ESM:** Modules ES natifs avec import.meta.dirname
+* **Node.js 24:** Utilisation des dernières APIs natives
+* **Dependencies:** Mise à jour vers Fastify 5.x et plugins compatibles
+* **Docker:** Image optimisée Node.js 24-alpine
+* **Performance:** Optimisations pour écrans haute résolution
+* **Mobile:** Amélioration UX tactile et animations adaptatives
+
 # 2.0.0 (2025-09-06)
 
 ### Features

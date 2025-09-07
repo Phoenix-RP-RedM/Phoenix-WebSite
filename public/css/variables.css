@@ -1,0 +1,58 @@
+/* ========================================
+   VARIABLES CSS GLOBALES
+   ======================================== */
+
+:root {
+    /* Couleurs principales */
+    --primary-color: #e74c3c;
+    --secondary-color: #c0392b;
+    --accent-color: #f39c12;
+    --success-color: #27ae60;
+    
+    /* Couleurs de texte */
+    --text-primary: #2c3e50;
+    --text-secondary: #7f8c8d;
+    --text-light: #ecf0f1;
+    
+    /* Couleurs de fond */
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2c2c2c;
+    --bg-card: rgba(255, 255, 255, 0.05);
+    --bg-overlay: rgba(0, 0, 0, 0.8);
+    
+    /* Ombres */
+    --shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --shadow-strong: 0 15px 35px rgba(0, 0, 0, 0.25);
+    
+    /* Transitions */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s ease-out;
+    
+    /* Espacements */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    
+    /* Typographie */
+    --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 2rem;
+    
+    /* Bordures */
+    --border-radius: 12px;
+    --border-radius-lg: 20px;
+    --border-radius-full: 50%;
+    
+    /* Tailles de contenu */
+    --content-width-mobile: 95vw;
+    --content-width-tablet: 85vw;
+    --content-width-desktop: 75vw;
+    --content-max-width: 1400px;
+}

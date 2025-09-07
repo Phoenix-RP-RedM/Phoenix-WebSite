@@ -1,15 +1,22 @@
-const fastify = require('fastify')({
+import Fastify from 'fastify';
+import helmet from '@fastify/helmet';
+import compress from '@fastify/compress';
+import staticFiles from '@fastify/static';
+import rateLimit from '@fastify/rate-limit';
+import cors from '@fastify/cors';
+import { join } from 'node:path';
+
+const fastify = Fastify({
   logger: { level: process.env.NODE_ENV === 'production' ? 'warn' : 'info' },
   trustProxy: true
 });
 
-const path = require('path');
 const PORT = process.env.PORT || 3000;
 
 async function start() {
   try {
     // Plugins de sécurité
-    await fastify.register(require('@fastify/helmet'), {
+    await fastify.register(helmet, {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
@@ -23,9 +30,9 @@ async function start() {
       crossOriginEmbedderPolicy: false
     });
 
-    await fastify.register(require('@fastify/compress'), { global: true, threshold: 1024 });
-    await fastify.register(require('@fastify/cors'), { origin: false });
-    await fastify.register(require('@fastify/rate-limit'), {
+    await fastify.register(compress, { global: true, threshold: 1024 });
+    await fastify.register(cors, { origin: false });
+    await fastify.register(rateLimit, {
       max: 100,
       timeWindow: '1 minute',
       errorResponseBuilder: () => ({
@@ -36,26 +43,26 @@ async function start() {
     });
 
     // Fichiers statiques
-    await fastify.register(require('@fastify/static'), {
-      root: path.join(__dirname, 'public'),
+    await fastify.register(staticFiles, {
+      root: join(import.meta.dirname, 'public'),
       prefix: '/static/'
     });
 
-    await fastify.register(require('@fastify/static'), {
-      root: path.join(__dirname, 'public'),
+    await fastify.register(staticFiles, {
+      root: join(import.meta.dirname, 'public'),
       prefix: '/',
       decorateReply: false
     });
 
-    await fastify.register(require('@fastify/static'), {
-      root: path.join(__dirname, 'ZPlace'),
+    await fastify.register(staticFiles, {
+      root: join(import.meta.dirname, 'ZPlace'),
       prefix: '/zplace/',
       decorateReply: false
     });
 
     // Routes
     fastify.get('/', async (request, reply) => {
-      return reply.sendFile('index.html', path.join(__dirname, 'public'));
+      return reply.sendFile('index.html', join(import.meta.dirname, 'public'));
     });
 
     fastify.get('/health', async () => ({
@@ -64,7 +71,9 @@ async function start() {
       service: 'Cendres Incandescentes ZPlace Website',
       uptime: process.uptime(),
       memory: process.memoryUsage(),
-      version: '2.0.0'
+      version: '3.0.0',
+      nodeVersion: process.version,
+      architecture: 'ESM'
     }));
 
     // Gestion d'erreurs

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cendres-incandescentes-v3.3.0-latest';
+const CACHE_NAME = 'cendres-incandescentes-v3.3.1-latest';
 const STATIC_ASSETS = [
   '/',
   '/css/variables.css',

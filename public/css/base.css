@@ -20,6 +20,9 @@ html {
 body {
   font-family: var(--font-primary);
   background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100% 100%;
   color: var(--text-light);
   min-height: 100vh;
   margin: 0;
@@ -49,6 +52,9 @@ body::before {
     radial-gradient(ellipse 1200px 800px at 20% 80%, rgba(231, 76, 60, 0.12) 0%, rgba(231, 76, 60, 0.06) 30%, rgba(231, 76, 60, 0.02) 60%, transparent 85%),
     radial-gradient(ellipse 1000px 1000px at 80% 20%, rgba(243, 156, 18, 0.12) 0%, rgba(243, 156, 18, 0.06) 30%, rgba(243, 156, 18, 0.02) 60%, transparent 85%),
     radial-gradient(ellipse 900px 700px at 40% 40%, rgba(39, 174, 96, 0.06) 0%, rgba(39, 174, 96, 0.03) 40%, rgba(39, 174, 96, 0.01) 70%, transparent 90%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100% 100%;
   z-index: -1;
   animation: backgroundPulse 15s ease-in-out infinite alternate;
   filter: blur(3px);
@@ -77,6 +83,9 @@ body::after {
   background: 
     radial-gradient(ellipse 800px 600px at 60% 70%, rgba(155, 89, 182, 0.05) 0%, rgba(155, 89, 182, 0.02) 40%, transparent 80%),
     radial-gradient(ellipse 700px 900px at 30% 30%, rgba(52, 152, 219, 0.04) 0%, rgba(52, 152, 219, 0.01) 50%, transparent 85%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100% 100%;
   z-index: -1;
   animation: backgroundPulseSecondary 18s ease-in-out infinite alternate-reverse;
   filter: blur(4px);

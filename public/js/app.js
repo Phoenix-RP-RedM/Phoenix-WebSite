@@ -55,7 +55,7 @@ window.addEventListener('load', () => {
                 priority: 'low'
             });
         }
-    }, 10000);
+    }, 10_000);
 });
 
 // Gestion d'erreurs globales

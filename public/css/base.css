@@ -39,27 +39,57 @@ body {
 /* Animation de fond */
 body::before {
     content: '';
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
+    min-height: 100vh;
     height: 100%;
     background: 
-        radial-gradient(circle at 20% 80%, rgba(231, 76, 60, 0.2) 0%, transparent 60%),
-        radial-gradient(circle at 80% 20%, rgba(243, 156, 18, 0.2) 0%, transparent 60%),
-        radial-gradient(circle at 40% 40%, rgba(39, 174, 96, 0.1) 0%, transparent 60%);
+        radial-gradient(ellipse 800px 600px at 20% 80%, rgba(231, 76, 60, 0.15) 0%, rgba(231, 76, 60, 0.05) 40%, transparent 70%),
+        radial-gradient(ellipse 600px 800px at 80% 20%, rgba(243, 156, 18, 0.15) 0%, rgba(243, 156, 18, 0.05) 40%, transparent 70%),
+        radial-gradient(ellipse 700px 500px at 40% 40%, rgba(39, 174, 96, 0.08) 0%, rgba(39, 174, 96, 0.03) 50%, transparent 80%);
     z-index: -1;
-    animation: backgroundPulse 10s ease-in-out infinite alternate;
+    animation: backgroundPulse 12s ease-in-out infinite alternate;
+    filter: blur(1px);
 }
 
 @keyframes backgroundPulse {
     0% { 
-        opacity: 0.6;
-        transform: scale(1);
+        opacity: 0.7;
+        transform: scale(1) rotate(0deg);
     }
     100% { 
         opacity: 0.9;
-        transform: scale(1.05);
+        transform: scale(1.02) rotate(1deg);
+    }
+}
+
+/* Animation supplémentaire pour plus de fluidité */
+body::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100vh;
+    height: 100%;
+    background: 
+        radial-gradient(ellipse 600px 400px at 60% 70%, rgba(155, 89, 182, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 500px 700px at 30% 30%, rgba(52, 152, 219, 0.06) 0%, transparent 70%);
+    z-index: -1;
+    animation: backgroundPulseSecondary 15s ease-in-out infinite alternate-reverse;
+    filter: blur(2px);
+}
+
+@keyframes backgroundPulseSecondary {
+    0% { 
+        opacity: 0.4;
+        transform: scale(1.01) rotate(-0.5deg);
+    }
+    100% { 
+        opacity: 0.6;
+        transform: scale(0.98) rotate(0.5deg);
     }
 }
 

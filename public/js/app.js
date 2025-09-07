@@ -4,6 +4,10 @@
 
 import { PWAManager } from './pwa-manager.js';
 import { UIManager } from './ui-manager.js';
+import NotificationManager from './notification-manager.js';
+
+// Variable globale pour accéder au gestionnaire de notifications
+window.notificationManager = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Initialisation Cendres Incandescentes ZPlace (ESM)...');
@@ -12,6 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
         new PWAManager();
         new UIManager();
+        
+        // Initialisation du gestionnaire de notifications
+        window.notificationManager = new NotificationManager();
+        
         console.log('✅ Application initialisée avec succès !');
     } catch (error) {
         console.error('❌ Erreur lors de l\'initialisation:', error);
@@ -26,6 +34,28 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         document.body.appendChild(errorDiv);
     }
+});
+
+// Fonctions utilitaires pour les notifications (accessibles globalement)
+window.sendNotification = (title, options = {}) => {
+    if (window.notificationManager) {
+        return window.notificationManager.sendNotification(title, options);
+    }
+    return false;
+};
+
+// Exemple d'utilisation des notifications (pour démonstration)
+window.addEventListener('load', () => {
+    // Démonstration après 10 secondes si les notifications sont activées
+    setTimeout(() => {
+        if (window.notificationManager && window.notificationManager.preferences.enabled) {
+            window.sendNotification('🎉 Application chargée !', {
+                body: 'Bienvenue dans Cendres Incandescentes ! L\'application est prête.',
+                type: 'update',
+                priority: 'low'
+            });
+        }
+    }, 10000);
 });
 
 // Gestion d'erreurs globales

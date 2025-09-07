@@ -5,11 +5,13 @@ const STATIC_ASSETS = [
   '/css/base.css',
   '/css/components.css',
   '/css/states.css',
+  '/css/notifications.css',
   '/js/pwa-manager.js',
   '/js/ui-manager.js',
+  '/js/notification-manager.js',
   '/js/app.js',
   '/zplace/ZPlace_Logo_C.I.png',
-  '/zplace/Logo-Cendres_Incandescentes-Fond_transparent.png',
+  '/Logo-Cendres_Incandescentes-Fond_transparent.png',
   '/manifest.json'
 ];
 
@@ -114,4 +116,87 @@ self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
+});
+
+// Gestion des notifications push
+self.addEventListener('push', event => {
+  console.log('📬 Notification push reçue');
+  
+  let notificationData = {
+    title: '🔥 Cendres Incandescentes',
+    body: 'Nouvelle notification !',
+    icon: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
+    badge: '/Logo-Cendres_Incandescentes-Fond_transparent.png',
+    tag: 'default',
+    requireInteraction: false,
+    actions: [
+      {
+        action: 'open',
+        title: '👀 Voir',
+        icon: '/Logo-Cendres_Incandescentes-Fond_transparent.png'
+      },
+      {
+        action: 'close',
+        title: '✕ Fermer'
+      }
+    ],
+    data: {
+      url: '/'
+    }
+  };
+
+  // Si des données sont envoyées avec la notification
+  if (event.data) {
+    try {
+      const payload = event.data.json();
+      notificationData = { ...notificationData, ...payload };
+    } catch (e) {
+      console.warn('Erreur parsing notification payload:', e);
+    }
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(notificationData.title, notificationData)
+  );
+});
+
+// Gestion des clics sur les notifications
+self.addEventListener('notificationclick', event => {
+  console.log('🔔 Clic sur notification:', event.notification.tag);
+  
+  event.notification.close();
+
+  if (event.action === 'close') {
+    return;
+  }
+
+  // Ouvrir ou focuser la fenêtre de l'application
+  const urlToOpen = event.notification.data?.url || '/';
+  
+  event.waitUntil(
+    clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true
+    }).then(clientList => {
+      // Chercher une fenêtre existante
+      for (const client of clientList) {
+        if (client.url === urlToOpen && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      
+      // Ouvrir une nouvelle fenêtre si aucune n'existe
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen);
+      }
+    })
+  );
+});
+
+// Gestion de la fermeture des notifications
+self.addEventListener('notificationclose', event => {
+  console.log('🔕 Notification fermée:', event.notification.tag);
+  
+  // Optionnel : envoyer des analytics ou logs
+  // analytics.track('notification_closed', { tag: event.notification.tag });
 });

@@ -86,6 +86,16 @@ export class PWAManager {
     }
     
     showUpdateBanner() {
+        // Notification push si disponible
+        if (window.notificationManager && window.notificationManager.preferences.enabled) {
+            window.notificationManager.sendNotification('🔄 Mise à jour disponible', {
+                body: 'Une nouvelle version de l\'application est disponible !',
+                type: 'update',
+                priority: 'high',
+                requireInteraction: true
+            });
+        }
+        
         const banner = document.createElement('div');
         banner.innerHTML = `
             <div style="position: fixed; top: 0; left: 0; right: 0; background: var(--accent-color);

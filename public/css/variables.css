@@ -9,10 +9,18 @@
     --accent-color: #f39c12;
     --success-color: #27ae60;
     
+    /* Couleurs d'accent pour notifications */
+    --accent-primary: #e74c3c;
+    --accent-secondary: #f39c12;
+    --accent-success: #27ae60;
+    --accent-danger: #e74c3c;
+    --accent-info: #3498db;
+    
     /* Couleurs de texte */
     --text-primary: #2c3e50;
     --text-secondary: #7f8c8d;
     --text-light: #ecf0f1;
+    --text-dark: #2c3e50;
     
     /* Couleurs de fond */
     --bg-primary: #1a1a1a;
@@ -24,10 +32,12 @@
     --shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.1);
     --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.15);
     --shadow-strong: 0 15px 35px rgba(0, 0, 0, 0.25);
+    --shadow-glow: 0 0 20px rgba(231, 76, 60, 0.3);
     
     /* Transitions */
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-fast: all 0.15s ease-out;
+    --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
     
     /* Espacements */
     --spacing-xs: 0.5rem;

@@ -17,7 +17,7 @@ export class UIManager {
     setupLogoClick() {
         this.logoContainer.addEventListener('click', (e) => {
             e.preventDefault();
-            window.open('/zplace/Logo-Cendres_Incandescentes-Fond_transparent.png', '_blank');
+            window.open('/zplace/ZPlace_Logo_C.I.png', '_blank');
         });
     }
     
@@ -31,7 +31,7 @@ export class UIManager {
     preloadAssets() {
         // Préchargement de l'image principale
         const preloadImage = new Image();
-        preloadImage.src = '/zplace/Logo-Cendres_Incandescentes-Fond_transparent.png';
+        preloadImage.src = '/zplace/ZPlace_Logo_C.I.png';
         
         // DNS prefetch pour les liens externes
         const domains = ['//github.com', '//discord.gg'];

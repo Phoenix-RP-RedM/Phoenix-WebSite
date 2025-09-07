@@ -92,12 +92,30 @@ export class PWAManager {
                         color: var(--text-primary); padding: 1rem; text-align: center;
                         font-weight: 600; z-index: 1001; box-shadow: var(--shadow-medium);">
                 🔄 Nouvelle version disponible ! 
-                <button onclick="location.reload()" style="background: var(--primary-color);
+                <button id="updateButton" style="background: var(--primary-color);
                         color: white; border: none; padding: 8px 16px; border-radius: 20px;
                         margin-left: 10px; cursor: pointer;">Actualiser</button>
+                <button id="dismissButton" style="background: transparent;
+                        color: var(--text-primary); border: 1px solid; padding: 8px 16px; 
+                        border-radius: 20px; margin-left: 10px; cursor: pointer;">Plus tard</button>
             </div>
         `;
         document.body.appendChild(banner);
+        
+        // Gestionnaire pour le bouton actualiser
+        document.getElementById('updateButton').addEventListener('click', () => {
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+                window.location.reload();
+            } else {
+                window.location.reload();
+            }
+        });
+        
+        // Gestionnaire pour le bouton dismisser
+        document.getElementById('dismissButton').addEventListener('click', () => {
+            banner.remove();
+        });
     }
 }
 

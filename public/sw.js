@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cendres-incandescentes-v3.3.1';
+const CACHE_NAME = 'cendres-incandescentes-v3.3.2';
 const STATIC_ASSETS = [
   '/',
   '/css/variables.css',
@@ -10,7 +10,6 @@ const STATIC_ASSETS = [
   '/js/ui-manager.js',
   '/js/notification-manager.js',
   '/js/app.js',
-  '/zplace/ZPlace_Logo_C.I.png',
   '/Logo-Cendres_Incandescentes-Fond_transparent.png',
   '/manifest.json'
 ];

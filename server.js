@@ -12,6 +12,7 @@ const fastify = Fastify({
 });
 
 const PORT = process.env.PORT || 3000;
+const SERVER_START_TIME = new Date().toISOString();
 
 async function start() {
   try {
@@ -78,6 +79,18 @@ async function start() {
       dependencies: 'latest'
     }));
 
+    // Endpoint pour les informations serveur/build
+    fastify.get('/api/server-info', async () => {
+
+      return {
+        startTime: SERVER_START_TIME,
+        lastUpdate: SERVER_START_TIME,
+        uptime: Math.floor(process.uptime()),
+        version: process.env.npm_package_version || '1.0.0',
+        environment: process.env.NODE_ENV || 'development'
+      };
+    });
+
     // Gestion d'erreurs
     fastify.setErrorHandler(async (error, request, reply) => {
       fastify.log.error(error);
@@ -100,6 +113,7 @@ async function start() {
     console.log(`🎨 Présentant le logo Cendres Incandescentes en pixel art`);
     console.log(`📱 PWA activée avec Service Worker`);
     console.log(`🔒 Sécurité renforcée avec headers et rate limiting`);
+    console.log(`⏰ Démarré le: ${SERVER_START_TIME}`);
 
   } catch (err) {
     fastify.log.error(err);

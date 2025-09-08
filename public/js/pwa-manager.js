@@ -113,11 +113,17 @@ export class PWAManager {
         document.body.appendChild(banner);
         
         // Gestionnaire pour le bouton actualiser
-        document.getElementById('updateButton').addEventListener('click', () => {
-            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-                navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+        document.getElementById('updateButton').addEventListener('click', async () => {
+            try {
+                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+                    // Attendre un peu pour que le SW traite le message
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
                 window.location.reload();
-            } else {
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour:', error);
+                // Forcer le rechargement même en cas d'erreur
                 window.location.reload();
             }
         });

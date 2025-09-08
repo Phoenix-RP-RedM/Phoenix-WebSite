@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cendres-incandescentes-v3.3.2';
+const CACHE_NAME = 'cendres-incandescentes-v1.0.5';
 const STATIC_ASSETS = [
   '/',
   '/css/variables.css',
@@ -112,8 +112,23 @@ self.addEventListener('fetch', event => {
 
 // Gestion des messages pour les mises à jour
 self.addEventListener('message', event => {
+  console.log('📨 Message reçu:', event.data);
+  
   if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
+    console.log('🔄 Activation forcée du nouveau Service Worker...');
+    self.skipWaiting()
+      .then(() => {
+        console.log('✅ Nouveau Service Worker activé');
+        // Notifier tous les clients que le SW a été mis à jour
+        self.clients.matchAll().then(clients => {
+          clients.forEach(client => {
+            client.postMessage({ type: 'SW_UPDATED' });
+          });
+        });
+      })
+      .catch(error => {
+        console.error('❌ Erreur skipWaiting:', error);
+      });
   }
 });
 

@@ -1,6 +1,6 @@
 {
   "name": "cendres-incandescentes-zplace-website",
-  "version": "3.0.0",
+  "version": "1.0.5",
   "description": "Site web PWA pour présenter le logo Cendres Incandescentes ZPlace pour l'événement caritatif ZEvent",
   "type": "module",
   "main": "server.js",
